@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> <!-- Desabilita zoom -->
+    <title>Gráfico de Barras</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0; /* Remover padding */
+            font-family: Arial, sans-serif;
+            background-color: &VAR{BACKGROUND_COLOR}; /* Cor de fundo da página */
+            overflow: hidden; /* Remove scroll */
+        }
+
+        h2 {
+            text-align: center;
+            font-size: medium;
+            color: #333; /* Cor do texto do label */
+            margin: 0; /* Remover margem do h2 */
+        }
+
+        #barChart {
+            width: 100%; /* Largura total do gráfico */
+            height: 100%; /* Altura do gráfico */
+            background-color: &VAR{CHART_BACKGROUND_COLOR}; /* Cor de fundo do gráfico */
+        }
+    </style>
+</head>
+<body>
+    <h2>&VAR{LABEL}</h2> <!-- Será substituído -->
+    <div>
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('barChart').getContext('2d');
+
+        const barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: &VAR{LABELS}, // Será substituído
+                datasets: [{
+                    label: '&VAR{LABEL}', // Será substituído
+                    data: &VAR{DATA}, // Será substituído
+                    backgroundColor: &VAR{BAR_BACKGROUND_COLOR}, // Cor de fundo das barras
+                    borderColor: &VAR{BORDER_COLOR}, // Cor da borda
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+</body>
+</html>

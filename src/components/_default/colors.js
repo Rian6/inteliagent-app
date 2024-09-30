@@ -1,0 +1,7 @@
+export const primaryColor = '#A9007A'
+export const white = 'white'
+export const black = 'black'
+export const backgroudPrimary = '#F8F8F8'
+export const primariaClara = '#FFF0FE'
+export const textPrimaryColor = '#6D7580'
+export const textBlackColor = 'black'
