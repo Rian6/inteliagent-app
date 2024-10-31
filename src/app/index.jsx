@@ -1,10 +1,48 @@
-import { Text, View, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, Image, Alert } from "react-native";
 import { router } from "expo-router";
 import Button from "@root/components/_default/button/Button";
 import { primaryColor, white } from "@root/components/_default/colors";
 import { stylesTelaInicial } from "@root/app/_style";
+import { runMigrations } from "@root/db/_createDatabase";
+import SnackBar from "@root/components/_default/snack-bar/SnackBar";
+import { documentDirectory, copyAsync } from "expo-file-system";
+import { isAvailableAsync, shareAsync } from "expo-sharing";
+import { DATABASE_NAME } from "@root/constants/database";
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function App() {
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      await runMigrations();
+      exportDatabase();
+    };
+
+    initializeDatabase();
+  }, []);
+
+  async function exportDatabase() {
+    try {
+      const databasePath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
+      const exportPath = `${FileSystem.documentDirectory}${DATABASE_NAME}`;
+
+      // Copia o banco de dados para um local compartilhável
+      await FileSystem.copyAsync({
+        from: databasePath,
+        to: exportPath,
+      });
+
+      // Compartilha o arquivo, se o recurso estiver disponível no dispositivo
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(exportPath);
+      }
+    } catch (error) {
+      console.error("Erro ao exportar o banco de dados:", error);
+      Alert.alert("Erro", "Não foi possível exportar o banco de dados.");
+    }
+  }
+
   function goToLogin() {
     router.navigate("login");
   }
@@ -16,11 +54,9 @@ export default function App() {
   return (
     <View style={stylesTelaInicial.container}>
       <Image
-        source={{
-          uri: "https://www.ourofinosaudeanimal.com/media/old/uploads/blog/post/fotos/2014/20141031110116.jpg",
-        }}
-        width={300}
-        height={500}
+        source={require("../assets/images/houses_banner.png")}
+        width={100}
+        height={100}
         style={stylesTelaInicial.image}
       />
       <Text style={stylesTelaInicial.title}>InteliAgent</Text>

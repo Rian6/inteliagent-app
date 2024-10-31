@@ -1,4 +1,9 @@
-import { backgroudPrimary, primaryColor, textPrimaryColor, white } from "@root/components/_default/colors";
+import {
+  backgroudPrimary,
+  primaryColor,
+  textPrimaryColor,
+  white,
+} from "@root/components/_default/colors";
 import { StyleSheet } from "react-native";
 
 export const stylesTelaInicial = StyleSheet.create({
@@ -26,11 +31,11 @@ export const stylesTelaInicial = StyleSheet.create({
     marginTop: 30,
   },
   buttonEsqueciSenha: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     width: 220,
     height: 50,
   },
-  textOu:{
+  textOu: {
     marginTop: 20,
     textAlign: "center",
     color: textPrimaryColor,
@@ -46,6 +51,33 @@ export const stylesTelaInicial = StyleSheet.create({
   subtitle: {
     marginTop: 10,
     textAlign: "center",
+    color: textPrimaryColor,
+  },
+  containerSubmit: {
+    width: "100%",
+    alignItems: "flex-start",
+    alignSelf: "flex-start",
+    marginTop: 20,
+  },
+  buttonValidar: {
+    width: 350,
+    height: 50,
+    marginTop: 30,
+    backgroudColor: primaryColor,
+  },
+  buttonEnviar: {
+    width: 350,
+    height: 50,
+    marginTop: 30,
+    backgroudColor: primaryColor,
+  },
+  buttonEnviarNovamente: {
+    alignSelf: "flex-start",
+    width: "100%",
+    height: 30,
+  },
+  subtitleLeft: {
+    marginTop: 10,
     color: textPrimaryColor,
   },
 });

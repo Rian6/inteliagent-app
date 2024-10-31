@@ -8,6 +8,7 @@ const InputText = ({
   onChangeText, 
   placeholder, 
   secureTextEntry, 
+  readOnly,
   style,
   styleContainer
 }) => {
@@ -17,6 +18,7 @@ const InputText = ({
       <TextInput
         style={[styles.input, style]}
         value={value}
+        readOnly={readOnly}
         onChangeText={onChangeText}
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}

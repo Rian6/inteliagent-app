@@ -13,7 +13,7 @@ const CodeInput = ({ length, onCodeFilled, style }) => {
       // Mover para o próximo input
       setTimeout(() => {
         this[`input_${index + 1}`].focus();
-      }, 100);
+      }, 5);
     }
 
     setCode(newCode);

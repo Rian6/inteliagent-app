@@ -1,4 +1,4 @@
-import { LOADSOCKETSERVICEURL } from '../constants/urls';
+import { LOADSOCKETSERVICEURL } from '../../constants/urls';
 
 export const getSocket = (url) => {
     return new Promise((resolve, reject) => {

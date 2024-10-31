@@ -1,5 +1,5 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import { primariaClara, primaryColor } from "@root/components/_default/colors";
+import { black, primariaClara, primaryColor } from "@root/components/_default/colors";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
@@ -7,6 +7,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: primaryColor,
+        tabBarInactiveTintColor: black,
         tabBarStyle: {
           backgroundColor: primariaClara,
           height: 60,
@@ -16,7 +17,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="planning/index"
+        name="planning"
         options={{
           title: "Planning",
           tabBarIcon: ({ color }) => (

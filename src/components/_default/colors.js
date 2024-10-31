@@ -5,3 +5,6 @@ export const backgroudPrimary = '#F8F8F8'
 export const primariaClara = '#FFF0FE'
 export const textPrimaryColor = '#6D7580'
 export const textBlackColor = 'black'
+export const sucessColor = '#6fa20e'
+export const errorColor = '#b62c1f'
+

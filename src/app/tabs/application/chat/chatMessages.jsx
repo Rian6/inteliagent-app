@@ -1,41 +1,85 @@
 import Button from '@root/components/_default/button/Button';
 import { primariaClara, primaryColor } from '@root/components/_default/colors';
 import { Stack, useNavigation } from 'expo-router';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 
 const oldMessages = [
-  { id: '1', text: 'Opa, bão? comi sua mulher ontem', sender: 'Comedor de mães', timestamp: new Date(Date.now() - 60 * 60 * 1000) },
-  { id: '2', text: 'Tranquilo eu masturbei a cara da sua avó', sender: 'Me', timestamp: new Date(Date.now() - 55 * 60 * 1000) },
+  { id: '1', text: 'Opa, bão? comim', sender: '', timestamp: new Date(Date.now() - 60 * 60 * 1000) },
+  { id: '2', text: 'Tranquilovó', sender: 'Me', timestamp: new Date(Date.now() - 55 * 60 * 1000) },
 ];
 
 export default function ChatMessages() {
   const [messages, setMessages] = useState(oldMessages);
   const [inputMessage, setInputMessage] = useState('');
   const navigation = useNavigation();
-  const flatListRef = useRef(null); // Crie uma referência para o FlatList
+  const flatListRef = useRef(null); // Referência para o FlatList
+  const [socket, setSocket] = useState(null); // Estado para armazenar a conexão WebSocket
 
-  React.useEffect(() => {
+  // Inicializa o WebSocket quando o componente monta
+  useEffect(() => {
+    const ws = new WebSocket('ws://192.168.1.44:8765'); // Substitua pelo IP do servidor WebSocket
+    setSocket(ws);
+  
+    ws.onopen = () => {
+      console.log('Conectado ao WebSocket');
+    };
+  
+    ws.onmessage = (event) => {
+      const messageData = JSON.parse(event.data);
+      const newMessage = {
+        id: String(messages.length + 1),
+        text: messageData.text,
+        sender: messageData.sender,
+        timestamp: new Date(messageData.timestamp),
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+  
+      // Role para a última mensagem
+      flatListRef.current.scrollToEnd({ animated: true });
+    };
+  
+    ws.onclose = () => {
+      console.log('Desconectado do WebSocket');
+      setTimeout(() => {
+        // Tente reconectar após 5 segundos
+        setSocket(new WebSocket('ws://192.168.1.44:8765'));
+      }, 5000); 
+    };
+  
+    ws.onerror = (error) => {
+      console.log('Erro de WebSocket:', error.message);
+    };
+  
+    return () => {
+      ws.close(); 
+    };
+  }, []);
+  
+
+  useEffect(() => {
     navigation.setOptions({
-      title: 'Marcelo', // Define o título do cabeçalho
+      title: 'Marcelo',
     });
   }, [navigation]);
 
   const sendMessage = () => {
-    if (inputMessage.trim()) {
+    if (inputMessage.trim() && socket && socket.readyState === WebSocket.OPEN) {
       const newMessage = {
-        id: String(messages.length + 1),
         text: inputMessage,
         sender: 'Me',
         timestamp: new Date(),
       };
-      setMessages([...messages, newMessage]);
-      setInputMessage('');
       
-      // Role para a última mensagem
-      flatListRef.current.scrollToEnd({ animated: true });
+      // Envia a mensagem para o servidor WebSocket
+      socket.send(JSON.stringify(newMessage));
+  
+      setInputMessage('');
+    } else {
+      console.log('WebSocket não está conectado');
     }
   };
+  
 
   const renderMessage = ({ item }) => (
     <View style={[styles.messageContainer, item.sender === 'Me' ? styles.myMessage : styles.theirMessage]}>
@@ -49,7 +93,7 @@ export default function ChatMessages() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
       <FlatList
-        ref={flatListRef} // Adicione a referência aqui
+        ref={flatListRef} // Adiciona a referência aqui
         data={messages}
         renderItem={renderMessage}
         keyExtractor={item => item.id}
@@ -124,7 +168,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 20,
   },
-  sendButtonText: {
+  sendButtonText: { 
     color: '#fff',
     fontSize: 16,
   },

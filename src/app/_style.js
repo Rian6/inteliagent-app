@@ -36,6 +36,8 @@ export const stylesTelaInicial = StyleSheet.create({
     color: textPrimaryColor,
   },
   image: {
+    width: 400,
+    height: 300,
     borderRadius: 50,
     marginBottom: 20,
   },
