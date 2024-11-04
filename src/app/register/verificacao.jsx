@@ -5,7 +5,7 @@ import Button from "@root/components/_default/button/Button";
 import CodeInput from "@root/components/_default/code-input/CodeInput";
 import { cadastrarUsuario, enviaEmailValidacaoCodigo, validateRegisterUser } from "@root/service/usuario/usuarioService";
 import { useEffect } from "react";
-import useUserStore from "@root/app/register/context/userContext";
+import useUserStore from "@root/context/userContext";
 import { router } from "expo-router";
 
 export default function Verificacao() {

@@ -13,7 +13,7 @@ const conversations = [
 export default function Chat() {
 
   function goToChat(){
-    router.push('tabs/application/chat/chatMessages')
+    router.push('chat-message')
   }
 
   const renderItem = ({ item }) => {

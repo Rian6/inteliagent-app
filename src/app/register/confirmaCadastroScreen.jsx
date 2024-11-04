@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import { stylesTelaInicial } from "@root/app/login/_style";
 import Button from "@root/components/_default/button/Button";
 import React, { useState } from "react";
-import useUserStore from "@root/app/register/context/userContext";
+import useUserStore from "@root/context/userContext";
 import ProfilePicture from "@root/components/_default/profile-picture/ProfilePicture";
 import { white } from "@root/components/_default/colors";
 import InputText from "@root/components/_default/input/InputText";

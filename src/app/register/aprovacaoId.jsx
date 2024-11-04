@@ -7,7 +7,7 @@ import InputText from "@root/components/_default/input/InputText";
 import Button from "@root/components/_default/button/Button";
 import StepIndicator from "@root/components/_default/step_indicator/StepIndicator";
 import CodeInput from "@root/components/_default/code-input/CodeInput";
-import useUserStore from "@root/app/register/context/userContext";
+import useUserStore from "@root/context/userContext";
 import { validateUsuariosCede } from "@root/service/cede/cedeService";
 
 export default function AprovacaoId() {

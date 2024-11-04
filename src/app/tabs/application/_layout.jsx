@@ -1,11 +1,15 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import { black, primariaClara, primaryColor } from "@root/components/_default/colors";
-import { Tabs } from "expo-router";
+import {
+  black,
+  primariaClara,
+  primaryColor,
+} from "@root/components/_default/colors";
+import { Tabs, useRootNavigationState } from "expo-router";
 
 export default function TabLayout() {
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarActiveTintColor: primaryColor,
         tabBarInactiveTintColor: black,
         tabBarStyle: {
@@ -14,10 +18,11 @@ export default function TabLayout() {
           paddingBottom: 10,
         },
         headerShown: false,
-      }}
+      })}
+      initialRouteName="home/index"
     >
       <Tabs.Screen
-        name="planning"
+        name="planning/index"
         options={{
           title: "Planning",
           tabBarIcon: ({ color }) => (

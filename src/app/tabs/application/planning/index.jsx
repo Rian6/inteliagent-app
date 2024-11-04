@@ -4,6 +4,7 @@ import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
 import { FAB, Searchbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // ou de react-native-vector-icons
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import { router } from "expo-router";
 
 export default function Planning() {
   const [search, setSearch] = useState("");
@@ -41,6 +42,10 @@ export default function Planning() {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  function iniciarAtendimento() {
+    router.navigate("atendimento");
+  }
 
   return (
     <View style={styles.container}>
@@ -82,13 +87,13 @@ export default function Planning() {
         icon="plus"
         style={styles.fab}
         color={white}
-        onPress={() => console.log("Pressed")}
+        onPress={() => iniciarAtendimento()}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: white,
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     margin: 16,
     right: 0,
     backgroundColor: primaryColor,

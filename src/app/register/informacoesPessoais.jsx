@@ -5,7 +5,7 @@ import { stylesTelaInicial } from "@root/app/login/_style";
 import SocialMediaButton from "@root/components/_default/social_media_button/SocialMediaButton";
 import InputText from "@root/components/_default/input/InputText";
 import Button from "@root/components/_default/button/Button";
-import useUserStore from "@root/app/register/context/userContext";
+import useUserStore from "@root/context/userContext";
 
 export default function InformacoesPessoais() {
   const { user, updateUser } = useUserStore();

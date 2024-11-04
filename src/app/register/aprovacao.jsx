@@ -8,7 +8,7 @@ import {
 import { stylesTelaInicial } from "@root/app/login/_style";
 import Button from "@root/components/_default/button/Button";
 import StepIndicator from "@root/components/_default/step_indicator/StepIndicator";
-import useUserStore from "@root/app/register/context/userContext";
+import useUserStore from "@root/context/userContext";
 
 export default function Aprovacao() {
   const [currentStep, setCurrentStep] = useState(2); // Controlar o passo atual

@@ -14,6 +14,7 @@ export const createSQLStatements = [
         ID CHAR(36) DEFAULT ${UUID_DEFAULT} PRIMARY KEY,
         ID_CIDADE INTEGER,
         ID_CATEGORIA INTEGER,
+        NOME TEXT,
         ATIVIDADE INTEGER,
         TIPO INTEGER,
         DATA_ULT_VISITA DATETIME,
@@ -34,7 +35,7 @@ export const createSQLStatements = [
         NOME TEXT,
         SITUACAO INTEGER
     );`,
-    
+     
     `CREATE TABLE IF NOT EXISTS ENDERECO (
         ID CHAR(36) DEFAULT ${UUID_DEFAULT} PRIMARY KEY,
         NOME TEXT,
@@ -106,7 +107,7 @@ export const createSQLStatements = [
     `CREATE TABLE IF NOT EXISTS TABLES_SINCRONYZE (
         ID INTEGER PRIMARY KEY,
         TABELA TEXT,
-        ID_REGISTRO INTEGER
+        ID_REGISTRO TEXT
     );`,
   ];
   
