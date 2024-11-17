@@ -1,6 +1,6 @@
 import { black, primaryColor, white } from "@root/components/_default/colors";
 import React, { useState } from "react";
-import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
+import { View, StyleSheet, TextInput, FlatList, Text, ScrollView } from "react-native";
 import InputTextForm from "@root/components/_default/input-text-form/InputTextForm";
 import SelectInput from "@root/components/_default/select-input/SelectInput";
 import DatePickerInput from "@root/components/_default/date-picker-input/DatePickerInput";
@@ -9,41 +9,6 @@ import { router } from "expo-router";
 import { SegmentedButtons } from "react-native-paper";
 
 export default function DadosGerais() {
-  const [search, setSearch] = useState("");
-  const [items, setItems] = useState([
-    { id: "1", name: "Bairro Floresta", status: 1 },
-    { id: "2", name: "Região Central", status: 0 },
-    { id: "3", name: "Bairro Interlagos", status: 2 },
-    // Adicione mais itens aqui com diferentes status
-  ]);
-
-  // Função para filtrar itens com base na busca
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  // Função para definir cor da listra dependendo do status
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 0:
-        return "#4CAF50"; // Verde para concluído
-      case 1:
-        return "#FFC107"; // Amarelo para pendente
-      case 2:
-        return "#2196F3"; // Azul para em progresso
-      default:
-        return "#E0E0E0"; // Cinza para status desconhecido
-    }
-  };
-
-  // Função para obter a data atual
-  const getCurrentDate = () => {
-    const date = new Date();
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Mês começa do 0
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
 
   const [selectedOption, setSelectedOption] = useState("");
   const [value, setValue] = React.useState("");
@@ -56,7 +21,7 @@ export default function DadosGerais() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.containerForm}>
+      <ScrollView style={styles.containerForm}>
         <Text style={{ fontWeight: 14 }}>Situação da Visita</Text>
         <SegmentedButtons
           value={value}
@@ -192,7 +157,7 @@ export default function DadosGerais() {
             style={[{ width: 170, marginTop: 8 }, styles.spaceComponents]}
           />
         </View>
-      </View>
+      </ScrollView>
       <Button
         title={"Continuar"}
         styleLabel={styles.buttonLogin}
@@ -208,17 +173,18 @@ export default function DadosGerais() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 40,
+    marginTop: 5,
     backgroundColor: white,
     alignItems: "center",
   },
   buttonLogin: {
     width: 350,
     height: 50,
+    marginBottom: 10,
     backgroudColor: primaryColor,
   },
   containerForm: {
-    margin: 30,
+    margin: 0,
     backgroundColor: white,
   },
   spaceComponents: {

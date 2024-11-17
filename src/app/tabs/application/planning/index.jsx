@@ -1,12 +1,28 @@
 import { black, primaryColor, white } from "@root/components/_default/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
 import { FAB, Searchbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // ou de react-native-vector-icons
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { router } from "expo-router";
+import { getPlanejamentos } from "@root/db/atendimentoPersistence";
 
 export default function Planning() {
+  const[planejamento, setPlanejamentos] = useState([]);
+  
+  useEffect(() => {
+    const fetchPlanejamentos = async () => {
+      try {
+        const planejamentosTmp = await getPlanejamentos();
+        setPlanejamentos(planejamentosTmp);
+      } catch (error) {
+        console.error("Erro ao buscar planejamentos:", error);
+      }
+    };
+  
+    fetchPlanejamentos();
+  }, []);  
+
   const [search, setSearch] = useState("");
   const [items, setItems] = useState([
     { id: "1", name: "Bairro Floresta", status: 1 },
@@ -35,8 +51,8 @@ export default function Planning() {
   };
 
   // Função para obter a data atual
-  const getCurrentDate = () => {
-    const date = new Date();
+  const getCurrentDate = (tmpDate) => {
+    const date = new Date(tmpDate)
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Mês começa do 0
     const year = date.getFullYear();
@@ -64,7 +80,7 @@ export default function Planning() {
         placeholder="Digite uma região"
       />
       <FlatList
-        data={filteredItems}
+        data={planejamento}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
@@ -75,9 +91,9 @@ export default function Planning() {
               ]}
             />
             <View>
-              <Text style={styles.itemText}>{item.name}</Text>
+              <Text style={styles.itemText}>{item.nome}</Text>
               <Text style={styles.updateText}>
-                Última atualização: {getCurrentDate()}
+                Última atualização: {getCurrentDate(item.data)}
               </Text>
             </View>
           </View>

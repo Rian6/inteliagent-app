@@ -10,6 +10,7 @@ import SnackBar from "@root/components/_default/snack-bar/SnackBar";
 import { login } from "@root/service/usuario/usuarioService";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { insertUsuario } from "@root/db/usuarioPersistence";
+import { consumer } from "@root/db/_defaultPersistence";
 
 export default function Login() {
   const params = useLocalSearchParams();
@@ -32,15 +33,19 @@ export default function Login() {
   function goToRegister() {
     router.replace("register");
   }
-
+ 
   async function logar() {
     try {
       const response = await login({ email, senha });
 
       if (response.status == 200 && response.headers && response.headers.authorization) {
+        const token = await AsyncStorage.getItem("token");
+        const isNewUser = token==null;
+
         await AsyncStorage.setItem("token", response.headers.authorization);
         const usuarioInserido = await insertUsuario(response.data);
         if(usuarioInserido){
+          await consumer(isNewUser);
           router.replace("tabs");
         }
       } else if (response.status == 401){

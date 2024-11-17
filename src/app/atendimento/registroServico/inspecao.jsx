@@ -76,10 +76,8 @@ export const styles = StyleSheet.create({
   buttonLogin: {
     width: 350,
     height: 50,
-    marginTop: 30,
-    backgroundColor: primaryColor,
-    justifyContent: "center",
-    alignItems: "center",
+    marginBottom: 10,
+    backgroudColor: primaryColor,
   },
   containerForm: {
     margin: 30,

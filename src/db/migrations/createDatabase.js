@@ -2,7 +2,7 @@ const UUID_DEFAULT = `(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(
 
 export const createSQLStatements = [
     `CREATE TABLE IF NOT EXISTS USUARIO (
-        ID CHAR(36) DEFAULT ${UUID_DEFAULT} PRIMARY KEY,
+        ID INTEGER PRIMARY KEY,
         NOME TEXT,
         EMAIL TEXT,
         ID_CEDE INTEGER,
@@ -65,14 +65,8 @@ export const createSQLStatements = [
     `CREATE TABLE IF NOT EXISTS INSPECAO (
         ID CHAR(36) DEFAULT ${UUID_DEFAULT} PRIMARY KEY,
         ID_VISITA INTEGER,
-        ID_INSPECAO_DETALHE INTEGER,
+        TIPO INTEGER,
         NUMERO_DEPOSITOS INTEGER,
-        SITUACAO INTEGER
-    );`,
-
-    `CREATE TABLE IF NOT EXISTS INSPECAO_DETALHE (
-        ID CHAR(36) DEFAULT ${UUID_DEFAULT} PRIMARY KEY,
-        DESCRICAO TEXT,
         SITUACAO INTEGER
     );`,
 

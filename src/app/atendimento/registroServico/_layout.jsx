@@ -16,10 +16,6 @@ export default function TabLayout() {
           backgroundColor: primariaClara,
           height: 60,
           paddingVertical: 10,
-          position: 'absolute', // Adicione esta linha
-          top: 0, // Adicione esta linha para posicionar no topo
-          left: 0,
-          right: 0,
         },
         headerShown: false,
         tabBarPosition: 'top', // Adicione esta linha
