@@ -7,7 +7,6 @@ const db = SQLite.openDatabaseSync(DATABASE_NAME);
 
 export const persist = async (sqlInsert, params, tableName, sync = true) => {
   await db.runSync(sqlInsert, params);
-  console.log(params)
 
   const newId = await db.getFirstAsync(`SELECT ID FROM ${tableName} ORDER BY rowid DESC LIMIT 1`, []);
   await db.runAsync(

@@ -1,34 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, FlatList, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker"; // Importe o ImagePicker
+import * as ImagePicker from "expo-image-picker";
 import { SegmentedButtons } from "react-native-paper";
 import { router } from "expo-router";
 import Button from "@root/components/_default/button/Button";
 import InputTextForm from "@root/components/_default/input-text-form/InputTextForm";
-import SelectInput from "@root/components/_default/select-input/SelectInput";
 import { MaterialIcons } from "@expo/vector-icons";
 import { black, errorColor, primariaClara, primaryColor, white } from "@root/components/_default/colors";
+import useVisitaStore from "@root/context/visitaContext";
 
 export default function RegistrarAmostras() {
-  const [segmentedValue, setSegmentedValue] = useState("não");
-  const [initialSample, setInitialSample] = useState("");
-  const [finalSample, setFinalSample] = useState("");
-  const [tubitosQuantity, setTubitosQuantity] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [images, setImages] = useState([]);
+  const { visita, updateVisita } = useVisitaStore();
+  const [segmentedValue, setSegmentedValue] = useState(visita.contêmAmostra ? "sim" : "não");
+  const [initialSample, setInitialSample] = useState(visita.amostra.numeroInicio);
+  const [finalSample, setFinalSample] = useState(visita.amostra.numeroFinal);
+  const [tubitosQuantity, setTubitosQuantity] = useState(visita.amostra.quantidade);
+  const [images, setImages] = useState(visita.amostra.imagens);
 
-  const options = [
-    { label: "Opção 1", value: "1" },
-    { label: "Opção 2", value: "2" },
-    { label: "Opção 3", value: "3" },
-  ];
+  useEffect(() => {
+    // Atualizar o estado global quando os dados locais mudarem
+    updateVisita({
+      amostra: {
+        numeroInicio: initialSample,
+        numeroFinal: finalSample,
+        quantidade: tubitosQuantity,
+        imagens: images,
+      },
+    });
+  }, [initialSample, finalSample, tubitosQuantity, images, updateVisita]);
 
   const handleDeleteImage = (id) => {
-    setImages(images.filter((image) => image.id !== id));
+    const updatedImages = images.filter((image) => image.id !== id);
+    setImages(updatedImages);
   };
 
   const addImage = async () => {
-    // Verificar as permissões da câmera
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
       Alert.alert("Permissão necessária", "Precisamos de permissão para acessar sua câmera.");
@@ -58,11 +64,11 @@ export default function RegistrarAmostras() {
         <Text style={styles.title}>Foi coletado amostras?</Text>
         <SegmentedButtons
           value={segmentedValue}
-          onValueChange={setSegmentedValue}
-          buttons={[
-            { value: "sim", label: "Sim" },
-            { value: "não", label: "Não" },
-          ]}
+          onValueChange={(value) => {
+            setSegmentedValue(value);
+            updateVisita({ contêmAmostra: value === "sim" });
+          }}
+          buttons={[{ value: "sim", label: "Sim" }, { value: "não", label: "Não" }]}
         />
 
         <Text style={styles.sectionTitle}>Registrar Amostras</Text>
@@ -116,13 +122,11 @@ export default function RegistrarAmostras() {
         </View>
       </ScrollView>
       <Button
-          title="Continuar"
-          styleLabel={styles.continueButton}
-          styleText={{ color: white }}
-          onPress={() => {
-            router.navigate("proximaTela");
-          }}
-        />
+        title="Continuar"
+        styleLabel={styles.continueButton}
+        styleText={{ color: white }}
+        onPress={() => router.navigate("atendimento/registroServico/tratamento")}
+      />
     </View>
   );
 }
@@ -130,7 +134,7 @@ export default function RegistrarAmostras() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 80,
+    paddingTop: 5,
     backgroundColor: white,
     alignItems: "center",
   },

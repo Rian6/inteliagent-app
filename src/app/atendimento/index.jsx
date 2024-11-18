@@ -1,12 +1,12 @@
 import { black, primaryColor, white } from "@root/components/_default/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import InputTextForm from "@root/components/_default/input-text-form/InputTextForm";
 import SelectInput from "@root/components/_default/select-input/SelectInput";
 import DatePickerInput from "@root/components/_default/date-picker-input/DatePickerInput";
 import Button from "@root/components/_default/button/Button";
-import { router } from "expo-router";
-import { inserirPlanejamento } from "@root/db/atendimentoPersistence";
+import { router, useGlobalSearchParams } from "expo-router";
+import { getPlanejamentoById, inserirPlanejamento } from "@root/db/atendimentoPersistence";
 import SnackBar from "@root/components/_default/snack-bar/SnackBar";
 
 export default function DadosGerais() {
@@ -25,15 +25,42 @@ export default function DadosGerais() {
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [snackBarIsError, setSnackBarIsError] = useState(false);
 
-  const cidades = [{ id: 1, label: "Cascavel", value: "1" }];
+  const { id } = useGlobalSearchParams();
+
+  const cidades = [{ id: 1, label: "Cascavel", value: 1 }];
   const situacoes = [
     { label: "Concluído", value: 0 },
     { label: "Pendente", value: 1 },
     { label: "Executando", value: 2 },
   ];
-  const categorias = [{ id: 1, label: "Teste", value: "1" }];
-  const atividades = [{ id: 1, label: "Recolhimento", value: "1" }];
-  const tipos = [{ id: 1, label: "Retorno", value: "1" }];
+  const categorias = [{ id: 1, label: "Teste", value: 1 }];
+  const atividades = [{ id: 1, label: "Recolhimento", value: 1 }];
+  const tipos = [{ id: 1, label: "Retorno", value: 1 }];
+
+  useEffect(() => {
+    if (id) {
+      const loadPlanejamento = async () => {
+        try {
+          const atendimentoTmp = await getPlanejamentoById(id);
+          if (atendimentoTmp) {
+            setCidade(atendimentoTmp.idCidade);
+            setCategoria(atendimentoTmp.idCategoria);
+            setAtividade(atendimentoTmp.atividade);
+            setTipo(atendimentoTmp.tipo);
+            setDataUltVisita(new Date(atendimentoTmp.dataUltVisita));
+            setNome(atendimentoTmp.nome);
+            setAno(atendimentoTmp.ano);
+            setZona(atendimentoTmp.zona);
+            setStatus(atendimentoTmp.status);
+          }
+        } catch (error) {
+          console.error("Erro ao carregar planejamento:", error);
+        }
+      };
+  
+      loadPlanejamento();
+    }
+  }, [id]);  
 
   async function criarPlanejamento() {
     setSubmitted(true); // Ativar validação ao tentar enviar o formulário
@@ -44,6 +71,7 @@ export default function DadosGerais() {
     }
 
     const atendimento = {
+      id: id,
       idCidade: cidade,
       idCategoria: categoria,
       atividade: atividade,
@@ -167,7 +195,7 @@ export default function DadosGerais() {
         />
       </View>
       <Button
-        title={"Criar Planejamento"}
+        title={id ? "Alterar Planejamento" : "Criar Planejamento"}
         styleLabel={styles.buttonLogin}
         styleText={{ color: white }}
         onPress={criarPlanejamento}

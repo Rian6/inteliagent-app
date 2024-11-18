@@ -1,17 +1,16 @@
 import { black, primaryColor, white } from "@root/components/_default/colors";
-import React, { useState } from "react";
-import { View, StyleSheet, TextInput, FlatList, Text, ScrollView } from "react-native";
+import React from "react";
+import { View, StyleSheet, Text, ScrollView } from "react-native";
 import InputTextForm from "@root/components/_default/input-text-form/InputTextForm";
 import SelectInput from "@root/components/_default/select-input/SelectInput";
 import DatePickerInput from "@root/components/_default/date-picker-input/DatePickerInput";
 import Button from "@root/components/_default/button/Button";
 import { router } from "expo-router";
 import { SegmentedButtons } from "react-native-paper";
+import useVisitaStore from "@root/context/visitaContext";
 
 export default function DadosGerais() {
-
-  const [selectedOption, setSelectedOption] = useState("");
-  const [value, setValue] = React.useState("");
+  const { visita, updateVisita } = useVisitaStore();
 
   const options = [
     { label: "Opção 1", value: "1" },
@@ -22,166 +21,118 @@ export default function DadosGerais() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.containerForm}>
-        <Text style={{ fontWeight: 14 }}>Situação da Visita</Text>
+        <Text style={{ fontWeight: "bold" }}>Situação da Visita</Text>
         <SegmentedButtons
-          value={value}
-          onValueChange={setValue}
+          value={visita.situacaoVisita}
+          onValueChange={(value) => updateVisita({ situacaoVisita: value })}
           buttons={[
-            {
-              value: "walk",
-              label: "Normal",
-            },
-            {
-              value: "train",
-              label: "Recusado",
-            },
-            { value: "drive", label: "Fechado" },
+            { value: "normal", label: "Normal" },
+            { value: "recusado", label: "Recusado" },
+            { value: "fechado", label: "Fechado" },
           ]}
         />
         <InputTextForm
-          label={"CEP"}
-          placeholder={"Digite o CEP da localidade"}
-          value={""}
+          label="CEP"
+          placeholder="Digite o CEP da localidade"
+          value={visita.cep}
+          onChangeText={(text) => updateVisita({ cep: text })}
           style={[{ width: 350 }, styles.spaceComponents]}
         />
         <InputTextForm
-          label={"Endereço"}
-          placeholder={"Digite o endereço"}
-          value={""}
+          label="Endereço"
+          placeholder="Digite o endereço"
+          value={visita.endereco}
+          onChangeText={(text) => updateVisita({ endereco: text })}
           style={[{ width: 350 }, styles.spaceComponents]}
         />
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 350,
-            },
-            styles.spaceComponents,
-          ]}
-        >
+        <View style={[styles.row, styles.spaceComponents]}>
           <InputTextForm
-            label={"Numero"}
-            placeholder={"Digite o numero"}
-            value={""}
-            style={[{ width: 170 }, styles.spaceComponents]}
+            label="Número"
+            placeholder="Digite o número"
+            value={visita.numero}
+            onChangeText={(text) => updateVisita({ numero: text })}
+            style={{ width: 170 }}
           />
           <SelectInput
             label="Lado"
             items={options}
-            selectedValue={selectedOption}
-            onValueChange={(value) => setSelectedOption(value)}
+            selectedValue={visita.lado}
+            onValueChange={(value) => updateVisita({ lado: value })}
             placeholder="Selecione uma opção"
             style={{ width: 170, marginTop: 14 }}
           />
         </View>
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 350,
-            },
-            styles.spaceComponents,
-          ]}
-        >
+        <View style={[styles.row, styles.spaceComponents]}>
           <SelectInput
-            label="Tipo Imovél"
+            label="Tipo Imóvel"
             items={options}
-            selectedValue={selectedOption}
-            onValueChange={(value) => setSelectedOption(value)}
+            selectedValue={visita.tipoImovel}
+            onValueChange={(value) => updateVisita({ tipoImovel: value })}
             placeholder="Selecione uma opção"
             style={{ width: 170, marginTop: 14 }}
           />
           <InputTextForm
-            label={"Complemento"}
-            placeholder={"Digite o numero"}
-            value={""}
-            style={[{ width: 170 }, styles.spaceComponents]}
+            label="Complemento"
+            placeholder="Digite o complemento"
+            value={visita.complemento}
+            onChangeText={(text) => updateVisita({ complemento: text })}
+            style={{ width: 170 }}
           />
         </View>
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 350,
-            },
-            styles.spaceComponents,
-          ]}
-        >
+        <View style={[styles.row, styles.spaceComponents]}>
           <DatePickerInput
             label="Primeira Visita"
             placeholder="Selecione uma data"
-            onDateChange={(date) => console.log(date)}
-            style={{ width: 170, marginTop: 8 }}
+            onDateChange={(date) => updateVisita({ primeiraVisita: date })}
+            style={{ width: 170 }}
           />
           <DatePickerInput
             label="Segunda Visita"
             placeholder="Selecione uma data"
-            onDateChange={(date) => console.log(date)}
-            style={{ width: 170, marginTop: 8 }}
+            onDateChange={(date) => updateVisita({ segundaVisita: date })}
+            style={{ width: 170 }}
           />
         </View>
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 350,
-            },
-            styles.spaceComponents,
-          ]}
-        >
+        <View style={[styles.row, styles.spaceComponents]}>
           <View>
-            <Text style={{ fontWeight: 14 }}>Tipo da Visita</Text>
+            <Text style={{ fontWeight: "bold" }}>Tipo da Visita</Text>
             <SegmentedButtons
-              value={value}
-              onValueChange={setValue}
+              value={visita.tipoVisita}
+              onValueChange={(value) => updateVisita({ tipoVisita: value })}
               buttons={[
-                {
-                  value: "walk",
-                  label: "N",
-                },
-                {
-                  value: "train",
-                  label: "R",
-                },
+                { value: "N", label: "N" },
+                { value: "R", label: "R" },
               ]}
             />
           </View>
           <InputTextForm
-            label={"Numero de quartos"}
-            placeholder={"Digite o numero"}
-            value={""}
-            style={[{ width: 170, marginTop: 8 }, styles.spaceComponents]}
+            label="Número de Quartos"
+            placeholder="Digite o número"
+            value={String(visita.numeroQuartos)}
+            onChangeText={(text) =>
+              updateVisita({ numeroQuartos: parseInt(text) || 0 })
+            }
+            style={{ width: 170 }}
           />
         </View>
       </ScrollView>
       <Button
-        title={"Continuar"}
+        title="Continuar"
         styleLabel={styles.buttonLogin}
         styleText={{ color: white }}
         onPress={() => {
-          router.navigate("atendimento/registroServico");
+          router.navigate("atendimento/registroServico/inspecao");
         }}
       />
     </View>
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 5,
     backgroundColor: white,
     alignItems: "center",
-  },
-  buttonLogin: {
-    width: 350,
-    height: 50,
-    marginBottom: 10,
-    backgroudColor: primaryColor,
   },
   containerForm: {
     margin: 0,
@@ -190,36 +141,15 @@ export const styles = StyleSheet.create({
   spaceComponents: {
     marginVertical: 8,
   },
-  searchInput: {
-    backgroundColor: white,
-    borderRadius: 0,
-    marginHorizontal: 5,
-    marginBottom: 15,
-  },
-  itemContainer: {
+  row: {
     flexDirection: "row",
-    alignItems: "center",
-    height: 80,
+    justifyContent: "space-between",
+    width: 350,
   },
-  statusStripe: {
-    width: 10,
-    height: "100%",
-    marginRight: 10,
-  },
-  itemText: {
-    fontSize: 16, // Tamanho da fonte do título
-    color: "#333",
-  },
-  updateText: {
-    fontSize: 14, // Tamanho da fonte do subtítulo
-    color: "#666",
-    marginTop: 4,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
+  buttonLogin: {
+    width: 350,
+    height: 50,
+    marginBottom: 10,
     backgroundColor: primaryColor,
-    bottom: 0,
   },
 });

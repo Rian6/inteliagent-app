@@ -1,6 +1,6 @@
 import { black, primaryColor, white } from "@root/components/_default/colors";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
+import { View, StyleSheet, TextInput, FlatList, Text, Pressable } from "react-native";
 import { FAB, Searchbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // ou de react-native-vector-icons
 import { icon } from "@fortawesome/fontawesome-svg-core";
@@ -31,11 +31,6 @@ export default function Planning() {
     // Adicione mais itens aqui com diferentes status
   ]);
 
-  // Função para filtrar itens com base na busca
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
-
   // Função para definir cor da listra dependendo do status
   const getStatusColor = (status) => {
     switch (status) {
@@ -59,8 +54,11 @@ export default function Planning() {
     return `${day}/${month}/${year}`;
   };
 
-  function iniciarAtendimento() {
-    router.navigate("atendimento");
+  function iniciarAtendimento(id=null) {
+    router.navigate({
+      pathname: 'atendimento', 
+      params: {id: id}
+    })
   }
 
   return (
@@ -83,7 +81,9 @@ export default function Planning() {
         data={planejamento}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
+          <Pressable 
+            style={styles.itemContainer} 
+            onPress={() => {iniciarAtendimento(item.id)}}>
             <View
               style={[
                 styles.statusStripe,
@@ -96,7 +96,7 @@ export default function Planning() {
                 Última atualização: {getCurrentDate(item.data)}
               </Text>
             </View>
-          </View>
+          </Pressable>
         )}
       />
       <FAB
@@ -113,7 +113,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: white,
-    paddingTop: 40,
   },
   searchInput: {
     backgroundColor: white,
