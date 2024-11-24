@@ -30,7 +30,7 @@ export default function ConfirmaCadastroScreen() {
   async function cadastrarUsuario() {
     const response = await registrarUsuario(user);
     if (response.status == 201) {
-      router.replace({pathname:"../login", params: { isRegisterUser: true }});
+      router.replace({pathname:"login/index", params: { isRegisterUser: true }});
     }
   }
 

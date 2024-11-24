@@ -6,7 +6,10 @@ import SelectInput from "@root/components/_default/select-input/SelectInput";
 import DatePickerInput from "@root/components/_default/date-picker-input/DatePickerInput";
 import Button from "@root/components/_default/button/Button";
 import { router, useGlobalSearchParams } from "expo-router";
-import { getPlanejamentoById, inserirPlanejamento } from "@root/db/atendimentoPersistence";
+import {
+  getPlanejamentoById,
+  inserirPlanejamento,
+} from "@root/db/atendimentoPersistence";
 import SnackBar from "@root/components/_default/snack-bar/SnackBar";
 
 export default function DadosGerais() {
@@ -57,13 +60,20 @@ export default function DadosGerais() {
           console.error("Erro ao carregar planejamento:", error);
         }
       };
-  
+
       loadPlanejamento();
     }
-  }, [id]);  
+  }, [id]);
 
   async function criarPlanejamento() {
-    setSubmitted(true); // Ativar validação ao tentar enviar o formulário
+    if (id) {
+      router.navigate({
+        pathname: "atendimento/visitas",
+        params: { idPlanejamento: id },
+      });
+    }
+
+    setSubmitted(true);
 
     if (!validate()) {
       exibirMensagem("Preencha todos os campos obrigatórios.", true);
@@ -86,15 +96,22 @@ export default function DadosGerais() {
 
     const newId = await inserirPlanejamento(atendimento);
     if (newId) {
-      exibirMensagem("Planejamento criado com sucesso!", false);
-      router.navigate("atendimento/visitas");
+      router.navigate({
+        pathname: "atendimento/visitas",
+        params: { id: newId },
+      });
     } else {
-      exibirMensagem("Erro ao criar planejamento. Tente novamente mais tarde.", true);
+      exibirMensagem(
+        "Erro ao criar planejamento. Tente novamente mais tarde.",
+        true
+      );
     }
   }
 
   function validate() {
-    return cidade && categoria && atividade && tipo && nome && ano && zona && status;
+    return (
+      cidade && categoria && atividade && tipo && nome && ano && zona && status
+    );
   }
 
   function exibirMensagem(msg, isError) {
@@ -115,7 +132,14 @@ export default function DadosGerais() {
           style={[{ width: 350 }, styles.spaceComponents]}
         />
         <View
-          style={[{ flexDirection: "row", justifyContent: "space-between", width: 350 }, styles.spaceComponents]}
+          style={[
+            {
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: 350,
+            },
+            styles.spaceComponents,
+          ]}
         >
           <SelectInput
             label="Município"
@@ -146,7 +170,14 @@ export default function DadosGerais() {
           style={[{ width: 350 }, styles.spaceComponents]}
         />
         <View
-          style={[{ flexDirection: "row", justifyContent: "space-between", width: 350 }, styles.spaceComponents]}
+          style={[
+            {
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: 350,
+            },
+            styles.spaceComponents,
+          ]}
         >
           <SelectInput
             label="Atividade"
@@ -168,7 +199,10 @@ export default function DadosGerais() {
           />
         </View>
         <View
-          style={[{ flexDirection: "row", justifyContent: "space-between" }, styles.spaceComponents]}
+          style={[
+            { flexDirection: "row", justifyContent: "space-between" },
+            styles.spaceComponents,
+          ]}
         >
           <DatePickerInput
             label="Data da Visita"
@@ -227,6 +261,5 @@ export const styles = StyleSheet.create({
     backgroundColor: white,
   },
   spaceComponents: {
-    marginVertical: 8,
   },
 });

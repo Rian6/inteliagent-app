@@ -20,7 +20,7 @@ export default function LayoutPlanning() {
         name="registroServico"
         options={{
           headerShown: true,
-          title: "Registro do Serviço Antivetorial",
+          title: "Registrar Visita",
           headerStyle: {
             backgroundColor: primariaClara,
             elevation: 0,

@@ -9,12 +9,11 @@ export async function insertUsuario(usuario){
     try{
         const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
 
-        console.log(usuario)
         usuarioInserido = await db.runAsync(CRIAR_USUARIO_INSERT, 
             {ID: usuario.id, NOME: usuario.nome, EMAIL: usuario.nome, IDCEDE: usuario.idCede, IDIMAGEMPERFIL: usuario.idImagemPerfilUsuario});
 
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 
     return usuarioInserido;

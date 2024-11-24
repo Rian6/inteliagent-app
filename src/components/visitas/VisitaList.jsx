@@ -1,56 +1,10 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, FlatList } from "react-native";
+import { buscarVisitas } from "@root/db/visitaPersistence";
+import { router, useGlobalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Image, FlatList, Pressable } from "react-native";
 
 const positivoImage = require('../../assets/images/positivo.png');
 const negativoImage = require('../../assets/images/negativo.png');
-
-const data = [
-  {
-    id: "1",
-    title: "Avenida Sabiá 1638",
-    status: 1, // Local estava fechado
-  },
-  {
-    id: "2",
-    title: "Rua dos Pardais, 580",
-    status: 2, // Visita Recusada
-  },
-  {
-    id: "3",
-    title: "Rua das Perdizes, 45",
-    status: 3, // Realizada
-  },
-  {
-    id: "4",
-    title: "Avenida Primavera, 200",
-    status: 4, // Visita foi rejeitada
-  },
-  {
-    id: "5",
-    title: "Rua das Palmeiras, 101",
-    status: 5, // Aberto
-  },
-  {
-    id: "6",
-    title: "Rua das Palmeiras, 101",
-    status: 5, // Aberto
-  },
-  {
-    id: "7",
-    title: "Rua das Palmeiras, 101",
-    status: 5, // Aberto
-  },
-  {
-    id: "8",
-    title: "Rua das Palmeiras, 101",
-    status: 5, // Aberto
-  },
-  {
-    id: "9",
-    title: "Rua das Palmeiras, 101",
-    status: 5, // Aberto
-  },
-];
 
 // Mapeamento de status para descrição, cor e imagem
 const statusMap = {
@@ -62,18 +16,26 @@ const statusMap = {
   default: { label: "Status Desconhecido", color: "#666", image: negativoImage }, // Cinza padrão
 };
 
-const VisitaList = () => {
+const VisitaList = ({data=[]}) => {
+  const { id } = useGlobalSearchParams();
+  function navegarVisita(idVisita){
+    router.navigate({
+      pathname: "atendimento/registroServico",
+      params: { idVisita: idVisita, idPlanejamento: id }, 
+    });
+  }
+
   const renderItem = ({ item }) => {
     const { label, color, image } = statusMap[item.status] || statusMap.default;
 
     return (
-      <View style={styles.itemContainer}>
+      <Pressable style={styles.itemContainer} onPress={()=>navegarVisita(item.id)}>
         <Image source={image} style={styles.itemImage} />
         <View style={styles.textContainer}>
-          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemTitle}>{item.nome}</Text>
           <Text style={[styles.itemSubtitle, { color }]}>{label}</Text>
         </View>
-      </View>
+      </Pressable>
     );
   };
 

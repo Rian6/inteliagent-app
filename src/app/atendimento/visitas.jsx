@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   primariaClara,
   primaryColor,
@@ -7,20 +8,35 @@ import { View, StyleSheet, Text } from "react-native";
 import { FAB, PaperProvider, Portal, Searchbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // ou de react-native-vector-icons
 import VisitaList from "@root/components/visitas/VisitaList";
-import React, { useState } from "react";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
+import { buscarVisitas } from "@root/db/visitaPersistence";
 
 export default function DadosGerais() {
-  const [state, setState] = React.useState({ open: false });
+  const [state, setState] = useState({ open: false });
+  const [data, setData] = useState([]);
 
   const onStateChange = ({ open }) => setState({ open });
   const { open } = state;
+
+  const { id } = useGlobalSearchParams();
+
+  useEffect(()=>{
+    const getVisitas = async () => { 
+      const tmpData = await buscarVisitas(id)
+      setData(tmpData);
+    }
+    getVisitas();
+  },[])
+
 
   function vizualizarRotas() {
     router.navigate("atendimento/rotaVisita");
   }
   function adicionarVisita() {
-    router.navigate("atendimento/registroServico");
+    router.navigate({
+      pathname: "atendimento/registroServico",
+      params: { idVisita: null, idPlanejamento: id },
+    });
   }
 
   return (
@@ -48,7 +64,7 @@ export default function DadosGerais() {
           para o seu melhor desempenho.
         </Text>
       </View>
-      <VisitaList />
+      <VisitaList data={data}/>
       <FAB.Group
         icon={open ? "close" : "plus"}
         fabStyle={styles.fabContainer}

@@ -22,9 +22,8 @@ export default function Verificacao() {
 
   async function validar() {
     const response = await validateRegisterUser(user)
-    console.log(response.status)
     if(response.status == 200){
-      router.replace("./confirmaCadastroScreen");
+      router.replace("register/confirmaCadastroScreen");
     }
   }
 

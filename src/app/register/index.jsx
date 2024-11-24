@@ -30,7 +30,7 @@ export default function Login() {
 
     //response = await validateUser();
 
-    router.replace('./aprovacaoId');
+    router.replace('register/aprovacaoId');
   }
 
   async function validateUser(user){

@@ -28,7 +28,7 @@ const DatePickerInput = ({
   };
 
   return (
-    <View style={[style]}>
+    <View style={[styles.container, style]}>
       <View style={styles.labelContainer}>
         {label && <Text style={styles.label}>{label}</Text>}
       </View>
@@ -48,6 +48,9 @@ const DatePickerInput = ({
 };
 
 const styles = StyleSheet.create({
+  container:{
+    marginVertical: 18,
+  },
   labelContainer: {
     position: "absolute",
     top: -10,

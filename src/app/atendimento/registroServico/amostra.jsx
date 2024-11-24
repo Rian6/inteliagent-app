@@ -11,19 +11,18 @@ import useVisitaStore from "@root/context/visitaContext";
 
 export default function RegistrarAmostras() {
   const { visita, updateVisita } = useVisitaStore();
-  const [segmentedValue, setSegmentedValue] = useState(visita.contêmAmostra ? "sim" : "não");
+  const [segmentedValue, setSegmentedValue] = useState(visita.contemAmostra ? "sim" : "não");
   const [initialSample, setInitialSample] = useState(visita.amostra.numeroInicio);
   const [finalSample, setFinalSample] = useState(visita.amostra.numeroFinal);
   const [tubitosQuantity, setTubitosQuantity] = useState(visita.amostra.quantidade);
   const [images, setImages] = useState(visita.amostra.imagens);
 
   useEffect(() => {
-    // Atualizar o estado global quando os dados locais mudarem
     updateVisita({
       amostra: {
-        numeroInicio: initialSample,
-        numeroFinal: finalSample,
-        quantidade: tubitosQuantity,
+        numeroInicio: initialSample ? initialSample : 0,
+        numeroFinal: finalSample ? finalSample : 0,
+        quantidade: tubitosQuantity ? tubitosQuantity : 0,
         imagens: images,
       },
     });
@@ -66,7 +65,7 @@ export default function RegistrarAmostras() {
           value={segmentedValue}
           onValueChange={(value) => {
             setSegmentedValue(value);
-            updateVisita({ contêmAmostra: value === "sim" });
+            updateVisita({ contemAmostra: value === "sim" });
           }}
           buttons={[{ value: "sim", label: "Sim" }, { value: "não", label: "Não" }]}
         />

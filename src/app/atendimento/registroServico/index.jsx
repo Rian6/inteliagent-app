@@ -1,16 +1,80 @@
 import { black, primaryColor, white } from "@root/components/_default/colors";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import InputTextForm from "@root/components/_default/input-text-form/InputTextForm";
 import SelectInput from "@root/components/_default/select-input/SelectInput";
 import DatePickerInput from "@root/components/_default/date-picker-input/DatePickerInput";
 import Button from "@root/components/_default/button/Button";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { SegmentedButtons } from "react-native-paper";
 import useVisitaStore from "@root/context/visitaContext";
+import { findVisitaById } from "@root/db/visitaPersistence";
+import { consultaCep } from "@root/service/api/consultaCep";
+import SnackBar from "@root/components/_default/snack-bar/SnackBar";
 
 export default function DadosGerais() {
-  const { visita, updateVisita } = useVisitaStore();
+  const { visita, updateVisita, resetVisita } = useVisitaStore();
+  const { idVisita, idPlanejamento } = useGlobalSearchParams();
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackVisible, setSnackVisible] = useState(false);
+  const [validateExecute, setValidateExecute] = useState(false);
+
+  useEffect(() => {
+    async function getVisita() {
+      const visitaSalva = await findVisitaById(idVisita);
+      updateVisita(visitaSalva);
+    }
+    if (idVisita) {
+      getVisita();
+    } else {
+      resetVisita();
+    }
+
+    updateVisita({ idPlanejamento: idPlanejamento });
+  }, []);
+
+  function validate() {
+    setValidateExecute(true);
+
+    if (
+      visita.cep &&
+      visita.nome &&
+      visita.numero &&
+      visita.lado &&
+      visita.tipoImovel &&
+      visita.complemento &&
+      visita.tipoVisita &&
+      visita.numeroQuartos
+    ) {
+      return true;
+    }
+
+    setSnackMessage("Preencha os campos obrigatórios!");
+    setSnackVisible(true);
+
+    return false;
+  }
+
+  function continuar() {
+    if (validate()) {
+      router.navigate("atendimento/registroServico/inspecao");
+    }
+  }
+
+  async function consultarCep() {
+    if (visita.cep && visita.cep.length === 9) {
+      const cep = await consultaCep(visita.cep);
+      if (cep.status === 200) {
+        const response = cep.data;
+        updateVisita({ nome: response.logradouro });
+      }
+    }
+  }
+
+  const optionsLado = [
+    { label: "Direito", value: "D" },
+    { label: "Esquerdo", value: "E" },
+  ];
 
   const options = [
     { label: "Opção 1", value: "1" },
@@ -21,108 +85,119 @@ export default function DadosGerais() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.containerForm}>
-        <Text style={{ fontWeight: "bold" }}>Situação da Visita</Text>
+        <Text style={{fontSize: 12}}>Situação da Visita</Text>
         <SegmentedButtons
+        style={{ width: 350 }}
           value={visita.situacaoVisita}
           onValueChange={(value) => updateVisita({ situacaoVisita: value })}
           buttons={[
-            { value: "normal", label: "Normal" },
-            { value: "recusado", label: "Recusado" },
-            { value: "fechado", label: "Fechado" },
+            { value: "N", label: "Normal" },
+            { value: "R", label: "Recusado" },
+            { value: "F", label: "Fechado" },
           ]}
         />
-        <InputTextForm
-          label="CEP"
-          placeholder="Digite o CEP da localidade"
-          value={visita.cep}
-          onChangeText={(text) => updateVisita({ cep: text })}
-          style={[{ width: 350 }, styles.spaceComponents]}
-        />
-        <InputTextForm
-          label="Endereço"
-          placeholder="Digite o endereço"
-          value={visita.endereco}
-          onChangeText={(text) => updateVisita({ endereco: text })}
-          style={[{ width: 350 }, styles.spaceComponents]}
-        />
-        <View style={[styles.row, styles.spaceComponents]}>
-          <InputTextForm
-            label="Número"
-            placeholder="Digite o número"
-            value={visita.numero}
-            onChangeText={(text) => updateVisita({ numero: text })}
-            style={{ width: 170 }}
-          />
-          <SelectInput
-            label="Lado"
-            items={options}
-            selectedValue={visita.lado}
-            onValueChange={(value) => updateVisita({ lado: value })}
-            placeholder="Selecione uma opção"
-            style={{ width: 170, marginTop: 14 }}
-          />
-        </View>
-        <View style={[styles.row, styles.spaceComponents]}>
-          <SelectInput
-            label="Tipo Imóvel"
-            items={options}
-            selectedValue={visita.tipoImovel}
-            onValueChange={(value) => updateVisita({ tipoImovel: value })}
-            placeholder="Selecione uma opção"
-            style={{ width: 170, marginTop: 14 }}
-          />
-          <InputTextForm
-            label="Complemento"
-            placeholder="Digite o complemento"
-            value={visita.complemento}
-            onChangeText={(text) => updateVisita({ complemento: text })}
-            style={{ width: 170 }}
-          />
-        </View>
-        <View style={[styles.row, styles.spaceComponents]}>
-          <DatePickerInput
-            label="Primeira Visita"
-            placeholder="Selecione uma data"
-            onDateChange={(date) => updateVisita({ primeiraVisita: date })}
-            style={{ width: 170 }}
-          />
-          <DatePickerInput
-            label="Segunda Visita"
-            placeholder="Selecione uma data"
-            onDateChange={(date) => updateVisita({ segundaVisita: date })}
-            style={{ width: 170 }}
-          />
-        </View>
-        <View style={[styles.row, styles.spaceComponents]}>
-          <View>
-            <Text style={{ fontWeight: "bold" }}>Tipo da Visita</Text>
-            <SegmentedButtons
-              value={visita.tipoVisita}
-              onValueChange={(value) => updateVisita({ tipoVisita: value })}
-              buttons={[
-                { value: "N", label: "N" },
-                { value: "R", label: "R" },
-              ]}
+        {visita.situacaoVisita == 'N' &&
+          <>
+            <View>
+              <Text style={{fontSize: 12}}>Tipo da Visita</Text>
+              <SegmentedButtons
+                value={visita.tipoVisita}
+                onValueChange={(value) => updateVisita({ tipoVisita: value })}
+                buttons={[
+                  { value: "N", label: "Normal" },
+                  { value: "R", label: "Retorno" },
+                ]}
+              />
+            </View>
+            <InputTextForm
+              label="CEP"
+              isCep
+              placeholder="Digite o CEP da localidade"
+              value={visita.cep}
+              onBlur={consultarCep}
+              onChangeText={(text) => updateVisita({ cep: text })}
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={!visita.cep && validateExecute}
             />
-          </View>
-          <InputTextForm
-            label="Número de Quartos"
-            placeholder="Digite o número"
-            value={String(visita.numeroQuartos)}
-            onChangeText={(text) =>
-              updateVisita({ numeroQuartos: parseInt(text) || 0 })
-            }
-            style={{ width: 170 }}
-          />
-        </View>
+            <InputTextForm
+              label="Endereço"
+              placeholder="Digite o endereço"
+              value={visita.nome}
+              onChangeText={(text) => updateVisita({ nome: text })}
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={!visita.nome && validateExecute}
+            />
+            <InputTextForm
+              label="Número"
+              placeholder="Digite o número"
+              value={visita.numero}
+              onChangeText={(text) => updateVisita({ numero: text })}
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={!visita.numero && validateExecute}
+            />
+            <InputTextForm
+              label="Número de Quartos"
+              placeholder="Digite o número"
+              value={String(visita.numeroQuartos)}
+              onChangeText={(text) =>
+                updateVisita({ numeroQuartos: parseInt(text) || 0 })
+              }
+              style={styles.spaceComponents}
+              invalid={!visita.numeroQuartos && validateExecute} // Marca como inválido
+            />
+            <SelectInput
+              label="Lado"
+              items={optionsLado}
+              selectedValue={visita.lado}
+              onValueChange={(value) => updateVisita({ lado: value })}
+              placeholder="Selecione uma opção"
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={!visita.lado && validateExecute}
+            />
+            <SelectInput
+              label="Tipo do Imóvel"
+              items={options}
+              selectedValue={visita.tipoImovel}
+              onValueChange={(value) => updateVisita({ tipoImovel: value })}
+              placeholder="Selecione uma opção"
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={!visita.tipoImovel && validateExecute}
+            />
+            <InputTextForm
+              label="Complemento"
+              placeholder="Digite o complemento"
+              value={visita.complemento}
+              onChangeText={(text) => updateVisita({ complemento: text })}
+              style={[{ width: 350 }, styles.spaceComponents]}
+            />
+            <DatePickerInput
+              label="Primeira Visita"
+              placeholder="Selecione uma data"
+              onDateChange={(date) => updateVisita({ primeiraVisita: date })}
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={!visita.primeiraVisita && validateExecute} // Marca como inválido
+            />
+            <DatePickerInput
+              label="Segunda Visita"
+              placeholder="Selecione uma data"
+              onDateChange={(date) => updateVisita({ segundaVisita: date })}
+              style={[{ width: 350 }, styles.spaceComponents]}
+              invalid={visita.segundaVisita && validateExecute}
+            />
+          </>
+        }
       </ScrollView>
       <Button
-        title="Continuar"
+        title={visita.situacaoVisita == 'N' ? "Continuar" : "Finalizar"}
         styleLabel={styles.buttonLogin}
         styleText={{ color: white }}
-        onPress={() => {
-          router.navigate("atendimento/registroServico/inspecao");
-        }}
+        onPress={continuar}
+      />
+      <SnackBar
+        message={snackMessage}
+        visible={snackVisible}
+        onDismissCallBack={() => setSnackVisible(false)}
+        isError={true}
       />
     </View>
   );
@@ -139,7 +214,7 @@ const styles = StyleSheet.create({
     backgroundColor: white,
   },
   spaceComponents: {
-    marginVertical: 8,
+    width: 350,
   },
   row: {
     flexDirection: "row",

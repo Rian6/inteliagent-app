@@ -19,10 +19,9 @@ export default function AprovacaoId() {
   function validar(){
     validateUsuariosCede(user.idCede).then(res =>{
       if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
-        router.replace("./aprovacao");
+        router.replace("register/aprovacao");
         return;
       } 
-      console.log(res)
       Alert.alert("Atenção","Id da cede não foi identificado na base de dados")
     });
   }

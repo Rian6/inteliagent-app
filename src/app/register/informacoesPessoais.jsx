@@ -13,7 +13,7 @@ export default function InformacoesPessoais() {
   const updateTelefone = (telefone) => updateUser({ telefone });
 
   function goToVerificacao() {
-    router.replace("./verificacao");
+    router.replace("register/verificacao");
   }
 
   return (

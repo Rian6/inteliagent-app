@@ -37,13 +37,13 @@ export default function Aprovacao() {
 
   function goToInformacoesPessoais() {
     if (isApproved) {
-      router.replace('./informacoesPessoais');
+      router.replace('register/informacoesPessoais');
     }
   }
 
   // Abrir conexão WebSocket e escutar mensagens do servidor
   useEffect(() => {
-    const ws = new WebSocket("ws://192.168.1.44:8080/aprove");
+    const ws = new WebSocket("ws://192.168.1.9:8080/aprove");
 
     ws.onopen = () => {
       console.log("Conexão WebSocket estabelecida");

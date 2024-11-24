@@ -27,7 +27,6 @@ export async function inserirPlanejamento(itemData){
 
     try {
         const newId = await persist(sqlInsert, params, tableName);
-        console.log('Item inserido com ID:', newId);
         return newId;
     } catch (error) {
         console.error('Erro ao inserir item:', error);

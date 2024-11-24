@@ -6,35 +6,44 @@ const db = SQLite.openDatabaseSync(DATABASE_NAME);
 
 export async function inserirVisita(visita){
     try {
-
         const tableName = 'VISITA';
         const sqlInsert = `
-            REPLACE INTO VISITA 
-            (ID, ID_ENDERECO, ID_PLANEJAMENTO, PRIMEIRA_VISITA, SEGUNDA_VISITA, TIPO_VISITA, NUMERO_QUARTOS, CONTEM_AMOSTRA, CONTEM_TRATAMENTO, SITUACAO_REFERENCIA, SITUACAO) 
-            VALUES ($ID, $ID_ENDERECO, $ID_PLANEJAMENTO, $PRIMEIRA_VISITA, $SEGUNDA_VISITA, $TIPO_VISITA, $NUMERO_QUARTOS, $CONTEM_AMOSTRA, $CONTEM_TRATAMENTO, $SITUACAO_REFERENCIA, $SITUACAO);
+            REPLACE INTO VISITA
+                (${visita.id ? 'ID,' : ''} ID_PLANEJAMENTO, PRIMEIRA_VISITA, SEGUNDA_VISITA,
+                TIPO_VISITA, NUMERO_QUARTOS, CONTEM_AMOSTRA, CONTEM_TRATAMENTO, SITUACAO_REFERENCIA,
+                CEP, NOME, NUMERO, COMPLEMENTO, SITUACAO)
+            VALUES 
+                (${visita.id ? '$ID,' : ''} $ID_PLANEJAMENTO, $PRIMEIRA_VISITA, $SEGUNDA_VISITA,
+                $TIPO_VISITA, $NUMERO_QUARTOS, $CONTEM_AMOSTRA, $CONTEM_TRATAMENTO, $SITUACAO_REFERENCIA,
+                $CEP, $NOME, $NUMERO, $COMPLEMENTO, $SITUACAO);
         `;
-        const newVisita = {
-            $ID: visita.id,
-            $ID_ENDERECO: 0,
+        let newVisita = {
             $ID_PLANEJAMENTO: visita.idPlanejamento,
-            $PRIMEIRA_VISITA: visita.primeiraVisita ? visita.primeiraVisita.toISOString().replace('T', ' ').slice(0, -1): '',
-            $SEGUNDA_VISITA: visita.segundaVisita ? visita.segundaVisita.toISOString().replace('T', ' ').slice(0, -1): '',
+            $PRIMEIRA_VISITA: visita.primeiraVisita,
+            $SEGUNDA_VISITA: visita.segundaVisita,
             $TIPO_VISITA: visita.tipoVisita,
             $NUMERO_QUARTOS: visita.numeroQuartos,
             $CONTEM_AMOSTRA: visita.contemAmostra,
             $CONTEM_TRATAMENTO: visita.contemTratamento,
-            $SITUACAO_REFERENCIA: visita.situacaoReferencia,
+            $SITUACAO_REFERENCIA: visita.situacaoVisita,
+            $CEP: visita.cep,
+            $NOME: visita.nome,
+            $NUMERO: visita.numero,
+            $COMPLEMENTO: visita.complemento,
             $SITUACAO: 1
-        };
+        };    
+
+        if(visita.id){
+            newVisita.$ID = visita.id;
+        }
 
         const idVisita = await persist(sqlInsert, newVisita, tableName, false);
-        console.log("----------------------------------------------------------------------------------");
 
         await inserirInspecoes(visita.inspecoes, idVisita)
         await inserirAmostras(visita.amostra, idVisita)
         await inserirTratamento(visita.tratamento, idVisita)
 
-        return newId;
+        return idVisita;
     } catch (error) {
         console.error('Erro ao inserir item:', error);
     }
@@ -66,7 +75,7 @@ async function inserirTratamento(tratamento, idVisita){
 async function inserirInspecoes(inspecoes, idVisita){
     const tableName = 'INSPECAO';
     const sqlInsert = `
-        INSERT INTO INSPECAO 
+        INSERT INTO INSPECAO  
         (ID_VISITA, TIPO, NUMERO_DEPOSITOS, SITUACAO) 
         VALUES ($ID_VISITA, $TIPO, $NUMERO_DEPOSITOS, $SITUACAO);
     `;
@@ -124,18 +133,64 @@ async function inserirAmostras(amostra, idVisita){
     }
 }
 
-export async function getVisitas(){
-    const planejamentos = await db.getAllSync(`SELECT ID, NOME, DATA_ULT_VISITA, STATUS FROM PLANEJAMENTO`, []);
-
+export async function findVisitaById(idVisita) {
     try {
-        if(planejamentos){
-            return await planejamentos.map(pl =>{
-                return {id: pl.ID, nome: pl.NOME, data: pl.DATA_ULT_VISITA, status: pl.STATUS}
-            })
+        const visita = await db.getFirstAsync(
+            `SELECT 
+                v.ID, 
+                v.PRIMEIRA_VISITA, 
+                v.SEGUNDA_VISITA, 
+                v.TIPO_VISITA, 
+                v.NUMERO_QUARTOS,
+                v.CONTEM_AMOSTRA, 
+                v.CONTEM_TRATAMENTO, 
+                v.SITUACAO_REFERENCIA, 
+                v.SITUACAO, 
+                v.ID_PLANEJAMENTO,
+                v.CEP,
+                v.NOME,
+                v.NUMERO,
+                v.COMPLEMENTO
+            FROM VISITA v
+            WHERE ID = $ID`,
+            { $ID: idVisita }
+        );
+
+        return {
+            id: visita.ID, 
+            primeiraVisita: visita.PRIMEIRA_VISITA, 
+            segundaVisita: visita.SEGUNDA_VISITA, 
+            tipoVisita: visita.TIPO_VISITA, 
+            numeroQuartos: visita.NUMERO_QUARTOS, 
+            contemAmostra: visita.CONTEM_AMOSTRA, 
+            contemTratamento: visita.CONTEM_TRATAMENTO, 
+            situacaoVisita: visita.SITUACAO_REFERENCIA, 
+            cep: visita.CEP,
+            nome: visita.NOME,
+            numero: visita.NUMERO,
+            complemento: visita.COMPLEMENTO,
+            situacao: visita.SITUACAO, 
+            idPlanejamento: visita.ID_PLANEJAMENTO
+        };
+    } catch (error) {
+        console.error("Erro na consulta ao banco de dados:", error);
+    }
+}
+
+export async function buscarVisitas(idAtendimento) {
+    try {
+        const visitas = await db.getAllSync(
+            `SELECT ID, NOME, NUMERO, SITUACAO_REFERENCIA FROM VISITA WHERE ID_PLANEJAMENTO = $ID`,
+            { $ID: idAtendimento }
+        );
+        if (visitas) {
+            return visitas.map(visita => {
+                return { id: visita.ID, nome: (visita.NOME + ", " + visita.NUMERO), status: visita.SITUACAO_REFERENCIA };
+            });
         }
     } catch (error) {
-        console.error('Erro ao inserir item:', error);
+        console.error("Erro na consulta ao banco de dados:", error);
     }
 
-    return null;
-};
+    return [];
+}

@@ -7,4 +7,3 @@ export const textPrimaryColor = '#6D7580'
 export const textBlackColor = 'black'
 export const sucessColor = '#6fa20e'
 export const errorColor = '#b62c1f'
-

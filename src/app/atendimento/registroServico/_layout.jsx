@@ -18,7 +18,7 @@ export default function TabLayout() {
           paddingVertical: 10,
         },
         headerShown: false,
-        tabBarPosition: 'top', // Adicione esta linha
+        tabBarPosition: 'top',
       }}
       initialRouteName="index"
     >
