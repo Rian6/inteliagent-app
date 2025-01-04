@@ -1,7 +1,7 @@
 import { buscarVisitas } from "@root/db/visitaPersistence";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, FlatList, Pressable } from "react-native";
+import { View, Text, StyleSheet, Image, FlatList, Pressable, RefreshControl } from "react-native";
 
 const positivoImage = require('../../assets/images/positivo.png');
 const negativoImage = require('../../assets/images/negativo.png');
@@ -18,19 +18,27 @@ const statusMap = {
 
 const VisitaList = ({data=[]}) => {
   const { id } = useGlobalSearchParams();
-  function navegarVisita(idVisita){
+  const [refreshing, setRefreshing] = useState(false); // estado de carregamento para refresh
+
+  function navegarVisita(idVisita) {
     router.navigate({
       pathname: "atendimento/registroServico",
-      params: { idVisita: idVisita, idPlanejamento: id }, 
+      params: { idVisita: idVisita, idPlanejamento: id },
     });
   }
+
+  // Função para atualizar os dados ao puxar
+  const onRefresh = async () => {
+    setRefreshing(true);
+    const tmpData = await buscarVisitas(id); // Recarrega as visitas
+    setRefreshing(false);
+  };
 
   const renderItem = ({ item }) => {
     const { label, color, image } = statusMap[item.status] || statusMap.default;
 
     return (
-      <Pressable style={styles.itemContainer} onPress={()=>navegarVisita(item.id)}>
-        <Image source={image} style={styles.itemImage} />
+      <Pressable style={styles.itemContainer} onPress={() => navegarVisita(item.id)}>
         <View style={styles.textContainer}>
           <Text style={styles.itemTitle}>{item.nome}</Text>
           <Text style={[styles.itemSubtitle, { color }]}>{label}</Text>
@@ -43,8 +51,14 @@ const VisitaList = ({data=[]}) => {
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.id.toString()}
       style={styles.list}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
     />
   );
 };

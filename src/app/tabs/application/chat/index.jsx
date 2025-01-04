@@ -1,43 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { format } from 'date-fns';
 import { primaryColor } from '@root/components/_default/colors';
 import { router } from 'expo-router';
 import InternetStatusMonitor from '@root/components/_default/internet/InternetStatusMonitor';
+import { MAINSERVICE, SOCKETSERVICEURL } from '@root/constants/urls';
+import useUserStore from '@root/context/userContext';
+import { DATABASE_NAME } from '@root/constants/database';
+import * as SQLite from "expo-sqlite";
 
-const conversations = [
-  { id: '1', name: 'Gestor', lastMessage: 'Bom dia', time: new Date(), unreadCount: 2 },
-];
+const db = SQLite.openDatabaseSync(DATABASE_NAME);
 
 export default function Chat() {
+  const [conversations, setConversations] = useState([]);
 
-  function goToChat(){
-    router.push('chat-message')
+  useEffect(() => {
+    async function getConversas() {
+      const usuario = await db.getFirstSync(`SELECT ID FROM USUARIO`, []);
+      axios.get(SOCKETSERVICEURL + '/users')
+      .then(response => {
+        const res = response.data
+          .filter(item => item.id != usuario.ID) // Filtra apenas os itens que queremos
+          .map(item => item); // Apenas retorna os itens restantes
+          setConversations(res);
+      })
+      .catch(error => console.error('Erro ao carregar usuários:', error));    
+    }
+    getConversas();
+  }, []);
+
+  async function goToChat(id, nome) {
+    const usuario = await db.getFirstSync(`SELECT ID FROM USUARIO`, []);
+    router.navigate({pathname:'chat-message', params: { idUsuarioMensagem: id, nome: nome, usuarioLogado: usuario.ID }});
   }
 
   const renderItem = ({ item }) => {
-    const currentTime = new Date();
-    const isMoreThan24h = (currentTime - item.time) / (1000 * 60 * 60) > 24;
-    const formattedTime = isMoreThan24h
-      ? format(item.time, 'dd/MM/yyyy')
-      : format(item.time, 'HH:mm');
 
     return (
-      <TouchableOpacity style={styles.conversationItem} onPress={goToChat}>
+      <TouchableOpacity style={styles.conversationItem} onPress={()=>goToChat(item.id, item.nome)}>
         {/* Avatar com a primeira letra do nome */}
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+          <Text style={styles.avatarText}>{item.nome.charAt(0)}</Text>
         </View>
 
-        {/* Nome e última mensagem */}
         <View style={styles.textContainer}>
-          <Text style={styles.conversationName}>{item.name}</Text>
+          <Text style={styles.conversationName}>{item.nome}</Text>
           <Text style={styles.lastMessage}>{item.lastMessage}</Text>
         </View>
 
-        {/* Data e contagem de mensagens não lidas */}
         <View style={styles.rightContainer}>
-          <Text style={styles.timeText}>{formattedTime}</Text>
           {item.unreadCount > 0 && (
             <View style={styles.unreadCountContainer}>
               <Text style={styles.unreadCountText}>{item.unreadCount}</Text>
@@ -50,7 +62,7 @@ export default function Chat() {
 
   return (
     <View style={styles.container}>
-            <InternetStatusMonitor />
+      <InternetStatusMonitor />
       <FlatList
         data={conversations}
         renderItem={renderItem}
@@ -61,7 +73,7 @@ export default function Chat() {
   );
 }
 
- const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',

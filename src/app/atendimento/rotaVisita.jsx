@@ -70,9 +70,12 @@ export default function RotaVisitas() {
 
   useEffect(() => {
     const parseData = () => {
+      console.log("passou aqui")
+
       if (rawDataVisita) {
         try {
           const parsedData = JSON.parse(rawDataVisita);
+
           setDataVisita(parsedData);
           setLoading(false); // dados carregados com sucesso
         } catch (error) {
@@ -105,11 +108,12 @@ export default function RotaVisitas() {
         }}
       >
         {dataVisita.map((address, index) => (
+          address && address.latitude && address.longitude && 
           <Marker
             key={address.id}
             coordinate={{
-              latitude: address.latitude,
-              longitude: address.longitude,
+              latitude: address && address.latitude ? address.latitude: 0,
+              longitude: address && address.longitude ? address.longitude: 0,
             }}
             title={`${address.title} (${getSequenceLabel(index)})`} // Mostrar o título + sequência
             description={getSequenceLabel(index)} // Adicionar sequência na descrição se necessário

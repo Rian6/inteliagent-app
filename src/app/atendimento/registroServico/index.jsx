@@ -171,18 +171,11 @@ export default function DadosGerais() {
               style={[{ width: 350 }, styles.spaceComponents]}
             />
             <DatePickerInput
-              label="Primeira Visita"
+              label="Data Visita"
               placeholder="Selecione uma data"
               onDateChange={(date) => updateVisita({ primeiraVisita: date })}
               style={[{ width: 350 }, styles.spaceComponents]}
               invalid={!visita.primeiraVisita && validateExecute} // Marca como inválido
-            />
-            <DatePickerInput
-              label="Segunda Visita"
-              placeholder="Selecione uma data"
-              onDateChange={(date) => updateVisita({ segundaVisita: date })}
-              style={[{ width: 350 }, styles.spaceComponents]}
-              invalid={visita.segundaVisita && validateExecute}
             />
           </>
         }

@@ -16,7 +16,7 @@ export default function Layout() {
       <Stack.Screen name="tabs" options={{headerShown: false}}/>
 
       <Stack.Screen name="atendimento" options={{headerShown: false}} />
-      <Stack.Screen name="chat-message/index" options={{headerShown: true, title:'Rogerio'}} />
+      <Stack.Screen name="chat-message/index" options={{headerShown: true, title:''}} />
     </Stack>
   );
 }

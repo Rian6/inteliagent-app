@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TextInput, FlatList, Text, Image } from "react-native";
 import { Checkbox } from "react-native-paper";
 import Button from "@root/components/_default/button/Button";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { black, primaryColor, white } from "@root/components/_default/colors";
 import useVisitaStore from "@root/context/visitaContext";
+import { buscarInspecoes } from "@root/db/visitaPersistence";
 
 const items = [
   { id: "1", title: "A1", subtitle: "Caixa d'água (elevado)", image: require("../../../assets/images/inspecao/A1.png") },
@@ -35,6 +36,16 @@ const ItemWithCheckbox = ({ item, onToggle, checked }) => (
 export default function Inspecao() {
   const { visita, updateVisita } = useVisitaStore(); // Acessa o estado global
   const [selectedItems, setSelectedItems] = useState(visita.inspecoes); // Usa o estado global para os itens inspecionados
+  const { idVisita, idPlanejamento } = useGlobalSearchParams();
+
+  useEffect(()=>{
+    async function buscarInspecoesBanco(){
+      const inspecoes = await buscarInspecoes(idVisita);
+      setSelectedItems(inspecoes)
+      return inspecoes;
+    }
+    buscarInspecoesBanco()
+  },[])
 
   const toggleCheckbox = (id) => {
     const newSelectedItems = selectedItems.includes(id)

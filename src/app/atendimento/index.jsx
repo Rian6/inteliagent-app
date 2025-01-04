@@ -32,13 +32,10 @@ export default function DadosGerais() {
 
   const cidades = [{ id: 1, label: "Cascavel", value: 1 }];
   const situacoes = [
-    { label: "Concluído", value: 0 },
-    { label: "Pendente", value: 1 },
-    { label: "Executando", value: 2 },
+    { label: "Concluído", value: 1 },
+    { label: "Pendente", value: 2 },
+    { label: "Executando", value: 3 },
   ];
-  const categorias = [{ id: 1, label: "Teste", value: 1 }];
-  const atividades = [{ id: 1, label: "Recolhimento", value: 1 }];
-  const tipos = [{ id: 1, label: "Retorno", value: 1 }];
 
   useEffect(() => {
     if (id) {
@@ -76,8 +73,8 @@ export default function DadosGerais() {
     setSubmitted(true);
 
     if (!validate()) {
-      exibirMensagem("Preencha todos os campos obrigatórios.", true);
-      return;
+      //exibirMensagem("Preencha todos os campos obrigatórios.", true);
+      // return;
     }
 
     const atendimento = {
@@ -128,103 +125,34 @@ export default function DadosGerais() {
           placeholder={"Digite o nome da Localidade"}
           value={nome}
           onChangeText={setNome}
-          invalid={submitted && !nome}
           style={[{ width: 350 }, styles.spaceComponents]}
         />
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 350,
-            },
-            styles.spaceComponents,
-          ]}
-        >
-          <SelectInput
-            label="Município"
-            items={cidades}
-            selectedValue={cidade}
-            onValueChange={(value) => setCidade(value)}
-            placeholder="Selecione uma opção"
-            invalid={submitted && !cidade}
-            style={{ width: 170 }}
-          />
-          <SelectInput
-            label="Situação"
-            items={situacoes}
-            selectedValue={status}
-            onValueChange={(value) => setStatus(value)}
-            placeholder="Selecione uma opção"
-            invalid={submitted && !status}
-            style={{ width: 170 }}
-          />
-        </View>
         <SelectInput
-          label="Categoria"
-          items={categorias}
-          selectedValue={categoria}
-          onValueChange={(value) => setCategoria(value)}
+          label="Situação"
+          items={situacoes}
+          selectedValue={status}
+          onValueChange={(value) => setStatus(value)}
           placeholder="Selecione uma opção"
-          invalid={submitted && !categoria}
-          style={[{ width: 350 }, styles.spaceComponents]}
+          style={{ width: 350 }}
         />
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 350,
-            },
-            styles.spaceComponents,
-          ]}
-        >
-          <SelectInput
-            label="Atividade"
-            items={atividades}
-            selectedValue={atividade}
-            onValueChange={(value) => setAtividade(value)}
-            placeholder="Selecione uma opção"
-            invalid={submitted && !atividade}
-            style={{ width: 170 }}
-          />
-          <SelectInput
-            label="Tipo"
-            items={tipos}
-            selectedValue={tipo}
-            onValueChange={(value) => setTipo(value)}
-            placeholder="Selecione uma opção"
-            invalid={submitted && !tipo}
-            style={{ width: 170 }}
-          />
-        </View>
-        <View
-          style={[
-            { flexDirection: "row", justifyContent: "space-between" },
-            styles.spaceComponents,
-          ]}
-        >
-          <DatePickerInput
-            label="Data da Visita"
-            placeholder="Selecione uma data"
-            onDateChange={setDataUltVisita}
-            style={{ width: 170, marginTop: 8 }}
-          />
-          <InputTextForm
-            label={"Ciclo/Ano"}
-            placeholder={"Ciclo/Ano"}
-            value={ano}
-            onChangeText={setAno}
-            invalid={submitted && !ano}
-            style={{ width: 170 }}
-          />
-        </View>
+        <DatePickerInput
+          label="Data da Visita"
+          placeholder="Selecione uma data"
+          onDateChange={setDataUltVisita}
+          style={{ width: 350, marginTop: 8 }}
+        />
+        <InputTextForm
+          label={"Ciclo/Ano"}
+          placeholder={"Ciclo/Ano"}
+          value={ano+""}
+          onChangeText={setAno}
+          style={{ width: 350 }}
+        />
         <InputTextForm
           label={"Zona"}
           placeholder={"Digite a zona do local"}
           value={zona}
           onChangeText={setZona}
-          invalid={submitted && !zona}
           style={[{ width: 350 }, styles.spaceComponents]}
         />
       </View>

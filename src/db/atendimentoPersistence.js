@@ -19,7 +19,7 @@ export async function inserirPlanejamento(itemData){
         $ATIVIDADE: itemData.atividade,
         $TIPO: itemData.tipo,
         $DATA_ULT_VISITA: itemData.dataUltVisita.toISOString().replace('T', ' ').slice(0, -1),
-        $ANO: new Date().toISOString().replace('T', ' ').slice(0, -1),
+        $ANO: itemData.ano,
         $ZONA: itemData.zona,
         $STATUS: itemData.status,
         $SITUACAO: itemData.situacao
@@ -35,8 +35,8 @@ export async function inserirPlanejamento(itemData){
     return null;
 };
 
-export async function getPlanejamentos(){
-    const planejamentos = await db.getAllSync(`SELECT ID, NOME, DATA_ULT_VISITA, STATUS FROM PLANEJAMENTO`, []);
+export async function getPlanejamentos(query=''){
+    const planejamentos = await db.getAllSync(`SELECT ID, NOME, DATA_ULT_VISITA, STATUS FROM PLANEJAMENTO where nome like '%${query}%'`, []);
 
     try {
         if(planejamentos){

@@ -4,36 +4,36 @@ import {
   primaryColor,
   white,
 } from "@root/components/_default/colors";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, FlatList, RefreshControl } from "react-native";
 import { FAB, PaperProvider, Portal, Searchbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // ou de react-native-vector-icons
 import VisitaList from "@root/components/visitas/VisitaList";
 import { router, useGlobalSearchParams } from "expo-router";
-import { buscarVisitas } from "@root/db/visitaPersistence";
+import { buscarPesquisarVisitas, buscarVisitas } from "@root/db/visitaPersistence";
 
 export default function DadosGerais() {
   const [state, setState] = useState({ open: false });
   const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false); // estado de carregamento para refresh
 
   const onStateChange = ({ open }) => setState({ open });
   const { open } = state;
 
   const { id } = useGlobalSearchParams();
 
-  useEffect(()=>{
-    const getVisitas = async () => { 
-      const tmpData = await buscarVisitas(id)
+  useEffect(() => {
+    const getVisitas = async () => {
+      const tmpData = await buscarVisitas(id);
       setData(tmpData);
-    }
+    };
     getVisitas();
-  },[])
+  }, []);
 
   function vizualizarRotas() {
     router.navigate({
       pathname: "atendimento/rotaVisita",
       params: { rawDataVisita: JSON.stringify(data) },
     });
-
   }
 
   function adicionarVisita() {
@@ -42,6 +42,19 @@ export default function DadosGerais() {
       params: { idVisita: null, idPlanejamento: id },
     });
   }
+
+  async function pesquisarVisitas(query) {
+    const tmpData = await buscarPesquisarVisitas(id, query);
+    setData(tmpData);
+  }
+
+  // Função para atualizar os dados ao puxar
+  const onRefresh = async () => {
+    setRefreshing(true);
+    const tmpData = await buscarVisitas(id); // Recarrega as visitas
+    setData(tmpData);
+    setRefreshing(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -58,6 +71,9 @@ export default function DadosGerais() {
               color="black"
             />
           )}
+          onChangeText={(text) => {
+            pesquisarVisitas(text);
+          }}
           placeholder="Pesquise suas Visitas"
         />
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>
