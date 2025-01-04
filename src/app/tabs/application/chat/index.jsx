@@ -3,11 +3,10 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native
 import { format } from 'date-fns';
 import { primaryColor } from '@root/components/_default/colors';
 import { router } from 'expo-router';
+import InternetStatusMonitor from '@root/components/_default/internet/InternetStatusMonitor';
 
 const conversations = [
-  { id: '1', name: 'John Doe', lastMessage: 'Hey, how are you?', time: new Date(), unreadCount: 2 },
-  { id: '2', name: 'Jane Smith', lastMessage: 'Let’s meet tomorrow!', time: new Date(), unreadCount: 0 },
-  { id: '3', name: 'Bob Brown', lastMessage: 'Can you send me the files?', time: new Date(), unreadCount: 5 },
+  { id: '1', name: 'Gestor', lastMessage: 'Bom dia', time: new Date(), unreadCount: 2 },
 ];
 
 export default function Chat() {
@@ -51,6 +50,7 @@ export default function Chat() {
 
   return (
     <View style={styles.container}>
+            <InternetStatusMonitor />
       <FlatList
         data={conversations}
         renderItem={renderItem}
@@ -61,11 +61,10 @@ export default function Chat() {
   );
 }
 
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create( {
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 50,
   },
   list: {
     paddingHorizontal: 10,

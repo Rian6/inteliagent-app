@@ -11,9 +11,9 @@ import StepIndicator from "@root/components/_default/step_indicator/StepIndicato
 import useUserStore from "@root/context/userContext";
 
 export default function Aprovacao() {
-  const [currentStep, setCurrentStep] = useState(2); // Controlar o passo atual
-  const [isApproved, setIsApproved] = useState(false); // Controle de aprovação
-  const [isRejected, setIsRejected] = useState(false); // Controle de rejeição
+  const [currentStep, setCurrentStep] = useState(2);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isRejected, setIsRejected] = useState(false); 
   const [socket, setSocket] = useState(null);
   const { user, updateUser } = useUserStore();
 

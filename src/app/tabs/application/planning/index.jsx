@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"; // ou de react-nati
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { router } from "expo-router";
 import { getPlanejamentos } from "@root/db/atendimentoPersistence";
+import InternetStatusMonitor from "@root/components/_default/internet/InternetStatusMonitor";
 
 export default function Planning() {
   const[planejamento, setPlanejamentos] = useState([]);
@@ -63,6 +64,7 @@ export default function Planning() {
 
   return (
     <View style={styles.container}>
+      <InternetStatusMonitor />
       <Searchbar
         style={styles.searchInput}
         icon={() => (

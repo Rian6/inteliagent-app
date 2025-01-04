@@ -28,10 +28,14 @@ export default function DadosGerais() {
     getVisitas();
   },[])
 
-
   function vizualizarRotas() {
-    router.navigate("atendimento/rotaVisita");
+    router.navigate({
+      pathname: "atendimento/rotaVisita",
+      params: { rawDataVisita: JSON.stringify(data) },
+    });
+
   }
+
   function adicionarVisita() {
     router.navigate({
       pathname: "atendimento/registroServico",

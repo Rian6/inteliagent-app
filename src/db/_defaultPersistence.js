@@ -44,7 +44,7 @@ const isInternetAvailable = async () => {
   return state.isConnected;
 };
 
-const syncIfConnected = async () => {
+export const syncIfConnected = async () => {
   const hasInternet = await isInternetAvailable();
   if (hasInternet) {
     const tables = await db.getAllSync(

@@ -1,30 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import BarChart from "@root/components/_default/chart/BarChart";
 import LineChart from "@root/components/_default/chart/LineChart";
 import { backgroudPrimary } from "@root/components/_default/colors";
 import VisitaListItem from "@root/components/main_screen/VisitaListItem";
+import { countByRegiao, findLastVisitas } from "@root/db/visitaPersistence";
+import InternetStatusMonitor from "@root/components/_default/internet/InternetStatusMonitor";
 
 const Home = () => {
-  const data = [
-    { id: 1, title: 'Avenida Sabiá, 1638' },
-    { id: 2, title: 'Item 2' },
-    { id: 3, title: 'Item 3' },
-    { id: 4, title: 'Item 3' },
-    { id: 5, title: 'Item 3' },
-  ];
+  const [data, setData] = useState([]);
+  const [dataPorRegiao, setDataPorRegiao] = useState([]);
+
+  useEffect(()=>{
+    const fetchVisitas = async () => {
+      const tmpData = await findLastVisitas()
+      setData(tmpData);
+
+      const tmpDataGrafico1 = await countByRegiao()
+      setDataPorRegiao(tmpDataGrafico1)
+    }  
+    fetchVisitas();
+  },[])
 
   return (
     <ScrollView bounces={false}>
+      <InternetStatusMonitor />
       <View style={styles.container}>
         <Text style={styles.textUltimasVisitas}>Últimas Visitas Realizadas</Text>
         <VisitaListItem data={data} />
         <BarChart
-          label={"Endemias Por Bairro"}
+          label={"Visitas Por Região"}
           width={400}
           height={250}
-          data={[10, 1, 2, 3, 4, 5, 8, 1]}
-          labels={["teste", "teste2", "asasd", "asda", "asdas", "asdas", "asdasdas", "asd"]}
+          data={dataPorRegiao.data}
+          labels={dataPorRegiao.labels}
         />
         <LineChart
           label={"Endemias Por Dia"}

@@ -130,7 +130,7 @@ export default function DadosGerais() {
             <InputTextForm
               label="Número"
               placeholder="Digite o número"
-              value={visita.numero}
+              value={visita.numero+""}
               onChangeText={(text) => updateVisita({ numero: text })}
               style={[{ width: 350 }, styles.spaceComponents]}
               invalid={!visita.numero && validateExecute}

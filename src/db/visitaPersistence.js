@@ -19,8 +19,8 @@ export async function inserirVisita(visita){
         `;
         let newVisita = {
             $ID_PLANEJAMENTO: visita.idPlanejamento,
-            $PRIMEIRA_VISITA: visita.primeiraVisita,
-            $SEGUNDA_VISITA: visita.segundaVisita,
+            $PRIMEIRA_VISITA: visita.primeiraVisita ? visita.primeiraVisita : new Date(),
+            $SEGUNDA_VISITA: visita.segundaVisita ? visita.segundaVisita : new Date(),
             $TIPO_VISITA: visita.tipoVisita,
             $NUMERO_QUARTOS: visita.numeroQuartos,
             $CONTEM_AMOSTRA: visita.contemAmostra,
@@ -32,12 +32,12 @@ export async function inserirVisita(visita){
             $COMPLEMENTO: visita.complemento,
             $SITUACAO: 1
         };    
-
+        
         if(visita.id){
             newVisita.$ID = visita.id;
         }
 
-        const idVisita = await persist(sqlInsert, newVisita, tableName, false);
+        const idVisita = await persist(sqlInsert, newVisita, tableName, true);
 
         await inserirInspecoes(visita.inspecoes, idVisita)
         await inserirAmostras(visita.amostra, idVisita)
@@ -90,7 +90,7 @@ async function inserirInspecoes(inspecoes, idVisita){
     });
 
     for (const newInspecao of newInspecoes) {
-        await persist(sqlInsert, newInspecao, tableName, false);
+        await persist(sqlInsert, newInspecao, tableName, true);
     }
 }
 
@@ -110,7 +110,7 @@ async function inserirAmostras(amostra, idVisita){
         $SITUACAO: 1
     }
 
-    const idAmostra = await persist(sqlInsert, newAmostra, tableName, false);
+    const idAmostra = await persist(sqlInsert, newAmostra, tableName, true);
 
     const tableNameImagem = 'IMAGEM_AMOSTRA';
     const sqlInsertImagem = `
@@ -129,7 +129,46 @@ async function inserirAmostras(amostra, idVisita){
     });
 
     for (const newImagem of newAmostraImagens) {
-        await persist(sqlInsertImagem, newImagem, tableNameImagem, false);
+        await persist(sqlInsertImagem, newImagem, tableNameImagem, true);
+    }
+}
+
+export async function findLastVisitas() {
+    try {
+        const visitas = await db.getAllAsync(
+            `SELECT 
+                v.ID,
+                v.NOME,
+                v.NUMERO
+            FROM VISITA v
+            ORDER BY v.ID DESC LIMIT 10`,
+        );
+
+        return visitas.map(visita => {
+            return {id: visita.ID,
+            title: visita.NOME,
+            numero: visita.NUMERO}
+        });
+    } catch (error) {
+        console.error("Erro na consulta ao banco de dados:", error);
+    }
+}
+
+export async function countByRegiao() {
+    try {
+        const visitas = await db.getAllAsync(
+            `SELECT 
+                p.ZONA,
+                COUNT(1) as DATA
+            FROM VISITA v
+            INNER JOIN PLANEJAMENTO P ON P.ID = V.ID_PLANEJAMENTO
+            GROUP BY ZONA`,
+        );
+
+        return {labels: visitas.map(visita => visita.ZONA),
+                data: visitas.map(visita => visita.DATA)}
+    } catch (error) {
+        console.error("Erro na consulta ao banco de dados:", error);
     }
 }
 
@@ -180,12 +219,13 @@ export async function findVisitaById(idVisita) {
 export async function buscarVisitas(idAtendimento) {
     try {
         const visitas = await db.getAllSync(
-            `SELECT ID, NOME, NUMERO, SITUACAO_REFERENCIA FROM VISITA WHERE ID_PLANEJAMENTO = $ID`,
+            `SELECT ID, NOME, NUMERO, SITUACAO_REFERENCIA, COALESCE(SITUACAO, 2) AS STATUS, LATITUDE, LONGITUDE, SEQUENCIA FROM VISITA WHERE ID_PLANEJAMENTO = $ID order by sequencia`,
             { $ID: idAtendimento }
         );
+
         if (visitas) {
             return visitas.map(visita => {
-                return { id: visita.ID, nome: (visita.NOME + ", " + visita.NUMERO), status: visita.SITUACAO_REFERENCIA };
+                return { id: visita.ID, sequencia: visita.SEQUENCIA, status: visita.STATUS, latitude: visita.LATITUDE, longitude: visita.LONGITUDE, title: (visita.NOME + ", " + visita.NUMERO), nome: (visita.NOME + ", " + visita.NUMERO), status: visita.SITUACAO_REFERENCIA };
             });
         }
     } catch (error) {

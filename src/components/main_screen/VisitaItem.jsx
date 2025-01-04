@@ -6,7 +6,7 @@ const VisitaItem = ({ item }) => {
     <View style={styles.itemContainer}>
       <Image style={{width: 50, height: 50, borderRadius: 10, marginRight: 10}} source={require('../../assets/images/no-image.jpg')}/>      
       <View>
-        <Text style={styles.itemText}>{item.title}</Text>
+        <Text style={styles.itemText}>{item.title+', '+ item.numero}</Text>
         <Text style={styles.itemTextSubtitle}>{"Sem endemias"}</Text>
       </View>
     </View>

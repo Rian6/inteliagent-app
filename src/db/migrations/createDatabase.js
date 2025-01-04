@@ -57,6 +57,9 @@ export const createSQLStatements = [
         NUMERO_QUARTOS TEXT,
         CONTEM_AMOSTRA BOOL,
         CONTEM_TRATAMENTO BOOL,
+        SEQUENCIA INTEGER,
+        LATITUDE DOUBLE,
+        LONGITUDE DOUBLE,
         SITUACAO_REFERENCIA INTEGER,
         SITUACAO INTEGER
     );`,

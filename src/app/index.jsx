@@ -11,6 +11,7 @@ import { isAvailableAsync, shareAsync } from "expo-sharing";
 import { DATABASE_NAME } from "@root/constants/database";
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import InternetStatusMonitor from "@root/components/_default/internet/InternetStatusMonitor";
 
 export default function App() {
   useEffect(() => {
