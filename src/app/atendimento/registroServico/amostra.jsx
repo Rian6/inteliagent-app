@@ -8,6 +8,7 @@ import InputTextForm from "@root/components/_default/input-text-form/InputTextFo
 import { MaterialIcons } from "@expo/vector-icons";
 import { black, errorColor, primariaClara, primaryColor, white } from "@root/components/_default/colors";
 import useVisitaStore from "@root/context/visitaContext";
+import { findAmostraByIdVisita } from "@root/db/visitaPersistence";
 
 export default function RegistrarAmostras() {
   const { visita, updateVisita } = useVisitaStore();
@@ -27,6 +28,18 @@ export default function RegistrarAmostras() {
       },
     });
   }, [initialSample, finalSample, tubitosQuantity, images, updateVisita]);
+
+  useEffect(()=>{
+    async function buscarAmostra(){
+      const result = await findAmostraByIdVisita(visita.id);
+      if(result){
+        setInitialSample(result.numeroInicio)
+        setFinalSample(result.numeroFinal)
+        setTubitosQuantity(result.quantidade)
+      }
+    }
+    buscarAmostra();
+  },[])
 
   const handleDeleteImage = (id) => {
     const updatedImages = images.filter((image) => image.id !== id);
@@ -60,64 +73,29 @@ export default function RegistrarAmostras() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Text style={styles.title}>Foi coletado amostras?</Text>
-        <SegmentedButtons
-          value={segmentedValue}
-          onValueChange={(value) => {
-            setSegmentedValue(value);
-            updateVisita({ contemAmostra: value === "sim" });
-          }}
-          buttons={[{ value: "sim", label: "Sim" }, { value: "não", label: "Não" }]}
-        />
-
         <Text style={styles.sectionTitle}>Registrar Amostras</Text>
         <View style={styles.containerForm}>
           <InputTextForm
             label={"Número inicial da amostra"}
             placeholder={"Digite o número inicial"}
-            value={initialSample}
+            value={initialSample+""}
             onChangeText={setInitialSample}
             style={[styles.input, styles.spaceComponents]}
           />
           <InputTextForm
             label={"Número final da amostra"}
             placeholder={"Digite o número final"}
-            value={finalSample}
+            value={finalSample+""}
             onChangeText={setFinalSample}
             style={[styles.input, styles.spaceComponents]}
           />
           <InputTextForm
             label={"Quantidade de tubitos"}
             placeholder={"Digite a quantidade de tubitos"}
-            value={tubitosQuantity}
+            value={tubitosQuantity+""}
             onChangeText={setTubitosQuantity}
             style={[styles.input, styles.spaceComponents]}
           />
-        </View>
-
-        <Text style={styles.sectionTitle}>Imagens</Text>
-        <FlatList
-          data={images}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: item.uri }} style={styles.imagePreview} />
-              <View style={styles.imageInfo}>
-                <Text style={styles.imageName}>{item.name}</Text>
-                <Text style={styles.imageDescription}>{item.description}</Text>
-              </View>
-              <TouchableOpacity onPress={() => handleDeleteImage(item.id)} style={styles.deleteButton}>
-                <Text style={styles.deleteIcon}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-
-        <View style={styles.addImageButtonContainer}>
-          <TouchableOpacity style={styles.addImageButton} onPress={addImage}>
-            <MaterialIcons name="camera-alt" size={24} color={black} style={styles.icon} />
-            <Text style={styles.addImageButtonText}>Adicionar Imagem</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
       <Button

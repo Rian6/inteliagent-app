@@ -92,13 +92,13 @@ async function inserirTratamento(tratamento, idVisita) {
 
 async function inserirInspecoes(inspecoes, idVisita) {
     const tableName = 'INSPECAO';
-    const newInspecoes = inspecoes.map((inspecao) => {
+    const newInspecoes = inspecoes ? inspecoes.map((inspecao) => {
         return {
             $ID_VISITA: idVisita,
             $TIPO: inspecao,
             $SITUACAO: 1,
         };
-    });
+    }) : [];
 
     for (const newInspecao of newInspecoes) {
         const inspecaoTmp = await db.getFirstAsync(
@@ -120,14 +120,23 @@ async function inserirInspecoes(inspecoes, idVisita) {
 }
 
 async function inserirAmostras(amostra, idVisita) {
+    const amostraTmp = await db.getFirstAsync(
+        `SELECT 
+            a.ID
+        FROM AMOSTRA a
+        WHERE ID_VISITA = $ID_VISITA`,
+        { $ID_VISITA: idVisita }
+    );
+
     const tableName = 'AMOSTRA';
     const sqlInsert = `
-        INSERT INTO AMOSTRA 
-        (ID_VISITA, NUMERO_INICIO, NUMERO_FINAL, QUANTIDADE, SITUACAO) 
-        VALUES ($ID_VISITA, $NUMERO_INICIO, $NUMERO_FINAL, $QUANTIDADE, $SITUACAO);
+        REPLACE INTO AMOSTRA 
+        (${amostraTmp && amostraTmp.ID ? 'ID,' : ''} ID_VISITA, NUMERO_INICIO, NUMERO_FINAL, QUANTIDADE, SITUACAO) 
+        VALUES (${amostraTmp && amostraTmp.ID ? '$ID,' : ''} $ID_VISITA, $NUMERO_INICIO, $NUMERO_FINAL, $QUANTIDADE, $SITUACAO);
     `;
-
+    console.log(amostra)
     const newAmostra = {
+        $ID: amostraTmp.ID,
         $ID_VISITA: idVisita,
         $NUMERO_INICIO: amostra.numeroInicio,
         $NUMERO_FINAL: amostra.numeroFinal,
@@ -136,6 +145,7 @@ async function inserirAmostras(amostra, idVisita) {
     }
 
     const idAmostra = await persist(sqlInsert, newAmostra, tableName, false);
+    return;
 
     const tableNameImagem = 'IMAGEM_AMOSTRA';
     const sqlInsertImagem = `
@@ -196,6 +206,31 @@ export async function countByRegiao() {
             labels: visitas.map(visita => visita.ZONA),
             data: visitas.map(visita => visita.DATA)
         }
+    } catch (error) {
+        console.error("Erro na consulta ao banco de dados:", error);
+    }
+}
+
+export async function findAmostraByIdVisita(idVisita) {
+    try {
+        const amostra = await db.getFirstAsync(
+            `SELECT 
+                ID_VISITA, 
+                NUMERO_INICIO, 
+                NUMERO_FINAL, 
+                QUANTIDADE
+            FROM AMOSTRA
+            WHERE ID_VISITA = $ID`,
+            { $ID: idVisita }
+        );
+        if (amostra) {
+            return {
+                numeroInicio: amostra.NUMERO_INICIO,
+                numeroFinal: amostra.NUMERO_FINAL,
+                quantidade: amostra.QUANTIDADE
+            };
+        }
+        return null;
     } catch (error) {
         console.error("Erro na consulta ao banco de dados:", error);
     }

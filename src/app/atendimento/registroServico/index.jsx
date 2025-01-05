@@ -56,9 +56,9 @@ export default function DadosGerais() {
   }
 
   function continuar() {
-    if (validate()) {
+    //if (validate()) {
       router.navigate("atendimento/registroServico/inspecao");
-    }
+    //}
   }
 
   async function consultarCep() {
@@ -98,17 +98,6 @@ export default function DadosGerais() {
         />
         {visita.situacaoVisita == 'N' &&
           <>
-            <View>
-              <Text style={{fontSize: 12}}>Tipo da Visita</Text>
-              <SegmentedButtons
-                value={visita.tipoVisita}
-                onValueChange={(value) => updateVisita({ tipoVisita: value })}
-                buttons={[
-                  { value: "N", label: "Normal" },
-                  { value: "R", label: "Retorno" },
-                ]}
-              />
-            </View>
             <InputTextForm
               label="CEP"
               isCep
@@ -144,24 +133,6 @@ export default function DadosGerais() {
               }
               style={styles.spaceComponents}
               invalid={!visita.numeroQuartos && validateExecute} // Marca como inválido
-            />
-            <SelectInput
-              label="Lado"
-              items={optionsLado}
-              selectedValue={visita.lado}
-              onValueChange={(value) => updateVisita({ lado: value })}
-              placeholder="Selecione uma opção"
-              style={[{ width: 350 }, styles.spaceComponents]}
-              invalid={!visita.lado && validateExecute}
-            />
-            <SelectInput
-              label="Tipo do Imóvel"
-              items={options}
-              selectedValue={visita.tipoImovel}
-              onValueChange={(value) => updateVisita({ tipoImovel: value })}
-              placeholder="Selecione uma opção"
-              style={[{ width: 350 }, styles.spaceComponents]}
-              invalid={!visita.tipoImovel && validateExecute}
             />
             <InputTextForm
               label="Complemento"

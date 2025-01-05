@@ -8,13 +8,13 @@ import useVisitaStore from "@root/context/visitaContext";
 import { buscarInspecoes } from "@root/db/visitaPersistence";
 
 const items = [
-  { id: "1", title: "A1", subtitle: "Caixa d'água (elevado)", image: require("../../../assets/images/inspecao/A1.png") },
-  { id: "2", title: "A2", subtitle: "Outros depósitos de armazenamento de água (baixo)", image: require("../../../assets/images/inspecao/A2.png") },
-  { id: "3", title: "B", subtitle: "Pequenos depósitos móveis", image: require("../../../assets/images/inspecao/B.png") },
-  { id: "4", title: "C", subtitle: "Depósitos fixos", image: require("../../../assets/images/inspecao/C.png") },
-  { id: "5", title: "D1", subtitle: "Pneus e outros materiais rodantes", image: require("../../../assets/images/inspecao/D1.png") },
-  { id: "6", title: "D2", subtitle: "Lixo (recipientes plásticos, latas) sucatas, entulhos", image: require("../../../assets/images/inspecao/D2.png") },
-  { id: "7", title: "E", subtitle: "Depósitos naturais", image: require("../../../assets/images/inspecao/E.png") },
+  { id: 1, title: "A1", subtitle: "Caixa d'água (elevado)", image: require("../../../assets/images/inspecao/A1.png") },
+  { id: 2, title: "A2", subtitle: "Outros depósitos de armazenamento de água (baixo)", image: require("../../../assets/images/inspecao/A2.png") },
+  { id: 3, title: "B", subtitle: "Pequenos depósitos móveis", image: require("../../../assets/images/inspecao/B.png") },
+  { id: 4, title: "C", subtitle: "Depósitos fixos", image: require("../../../assets/images/inspecao/C.png") },
+  { id: 5, title: "D1", subtitle: "Pneus e outros materiais rodantes", image: require("../../../assets/images/inspecao/D1.png") },
+  { id: 6, title: "D2", subtitle: "Lixo (recipientes plásticos, latas) sucatas, entulhos", image: require("../../../assets/images/inspecao/D2.png") },
+  { id: 7, title: "E", subtitle: "Depósitos naturais", image: require("../../../assets/images/inspecao/E.png") },
 ];
 
 const ItemWithCheckbox = ({ item, onToggle, checked }) => (
