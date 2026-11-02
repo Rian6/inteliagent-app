@@ -25,6 +25,15 @@ const statuses: Record<number, string> = {
   2: "Pendente",
   3: "Em andamento",
 };
+const statusTags: Record<number, { backgroundColor: string; color: string }> = {
+  1: { backgroundColor: colors.successContainer, color: colors.success },
+  2: { backgroundColor: colors.warningContainer, color: colors.warning },
+  3: { backgroundColor: colors.primaryContainer, color: colors.blue },
+};
+const statusTagFallback = {
+  backgroundColor: colors.surfaceVariant,
+  color: colors.onSurfaceVariant,
+};
 export default function Planning() {
   const bannerVisible = useUpdateStore(selectUpdateBannerVisible);
   const profile = useSessionStore((state) => state.profile);
@@ -200,13 +209,17 @@ export default function Planning() {
                   style={{
                     padding: 12,
                     borderRadius: 14,
-                    backgroundColor: colors.primaryContainer,
+                    backgroundColor:
+                      statusTags[item.status]?.backgroundColor ||
+                      statusTagFallback.backgroundColor,
                   }}
                 >
                   <MaterialCommunityIcons
                     name="map-marker-radius-outline"
                     size={26}
-                    color={colors.primary}
+                    color={
+                      statusTags[item.status]?.color || statusTagFallback.color
+                    }
                   />
                 </View>
                 <View style={{ flex: 1, gap: 4 }}>
@@ -239,12 +252,7 @@ export default function Planning() {
                 <Text
                   variant="labelMedium"
                   style={{
-                    color:
-                      item.status === 1 ? colors.secondary : colors.primary,
-                    backgroundColor:
-                      item.status === 1
-                        ? colors.secondaryContainer
-                        : colors.primaryContainer,
+                    ...(statusTags[item.status] || statusTagFallback),
                     paddingHorizontal: 10,
                     paddingVertical: 6,
                     borderRadius: 8,

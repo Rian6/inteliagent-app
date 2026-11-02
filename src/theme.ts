@@ -31,6 +31,10 @@ export const lightColors = {
   onError: "#FFFFFF",
   errorContainer: "#FEECE9",
   onErrorContainer: "#77251B",
+  success: "#386A20",
+  successContainer: "#E8F5EE",
+  warning: "#7A4A00",
+  warningContainer: "#FFF2DD",
 };
 export const darkColors = {
   blue: "#5EA0FF",
@@ -63,6 +67,10 @@ export const darkColors = {
   onError: "#601410",
   errorContainer: "#8C1D18",
   onErrorContainer: "#F9DEDC",
+  success: "#A9D3AB",
+  successContainer: "#1E2F26",
+  warning: "#F2C14E",
+  warningContainer: "#332A10",
 };
 export type ThemeMode = "light" | "dark";
 // Shared palette read across the app. applyThemeToShared() swaps its values
