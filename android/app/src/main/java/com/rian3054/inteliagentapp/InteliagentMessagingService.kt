@@ -1,6 +1,7 @@
 package com.rian3054.inteliagentapp
 
 import android.content.Intent
+import com.google.firebase.messaging.RemoteMessage
 import expo.modules.notifications.service.ExpoFirebaseMessagingService
 
 /** Keep Expo push taps intact after Android reclaims a background process.
@@ -16,9 +17,10 @@ class InteliagentMessagingService : ExpoFirebaseMessagingService() {
         it.startsWith("gcm.n.") || it.startsWith("gcm.notification.")
       }
       if (notificationKeys.isNotEmpty()) {
-        val notificationIntent = Intent(intent)
-        notificationKeys.forEach { notificationIntent.removeExtra(it) }
-        super.handleIntent(notificationIntent)
+        // Delegate directly to Expo instead of FCM's automatic tray renderer.
+        // Keep notification fields intact: SDK 58 skips foreground JS handlers
+        // for data-only messages, even when they contain a title and message.
+        super.onMessageReceived(RemoteMessage(extras))
         return
       }
     }

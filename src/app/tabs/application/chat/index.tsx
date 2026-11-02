@@ -10,7 +10,6 @@ import { Text, Heading, Field, Button, ErrorText } from "@root/components/ui";
 import { ActivityIndicator } from "react-native";
 import { colors as c } from "@root/theme";
 import { ChatIcon, ContactAvatar } from "@root/components/chat/ChatUI";
-import MessagePushButton from "@root/components/chat/MessagePushButton";
 import {
   chatPreview,
   chatTime,
@@ -135,7 +134,6 @@ export default function Chat() {
         )}
       </View>
       <ErrorText>{error}</ErrorText>
-      <MessagePushButton />
       {!!error && (
         <Button variant="secondary" onPress={() => load()}>
           Tentar novamente
