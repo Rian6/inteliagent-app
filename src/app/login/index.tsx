@@ -5,6 +5,7 @@ import AuthScreen from "@root/components/auth/AuthScreen";
 import { Button, Field, Text, ErrorText } from "@root/components/ui";
 import { login } from "@root/service/usuario/usuarioService";
 import { insertUsuario } from "@root/db/usuarioPersistence";
+import { beginUpdateSession, checkForAppUpdate } from "@root/service/updates/checkAppUpdate";
 export default function Login() {
   const params = useLocalSearchParams();
   const [email, setEmail] = useState(""),
@@ -25,6 +26,8 @@ export default function Login() {
         senha,
       });
       if (response.status === 200 && response.headers?.authorization) {
+        beginUpdateSession();
+        await checkForAppUpdate(true);
         await insertUsuario({
           ...response.data,
           token: response.headers.authorization,
