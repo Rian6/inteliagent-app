@@ -1,6 +1,6 @@
-import { configureFonts, MD3LightTheme } from "react-native-paper";
+import { configureFonts, MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 
-export const colors = {
+export const lightColors = {
   blue: "#0066D6",
   lavender: "#EDE9FE",
   mint: "#E8F5EE",
@@ -30,6 +30,40 @@ export const colors = {
   errorContainer: "#FEECE9",
   onErrorContainer: "#77251B",
 };
+export const darkColors = {
+  blue: "#5EA0FF",
+  lavender: "#2E2A45",
+  mint: "#1E2F26",
+  brand: "#F2F2F6",
+  cyan: "#5EA0FF",
+  graphite: "#F2F2F6",
+  primary: "#F2F2F6",
+  onPrimary: "#1C1C1C",
+  primaryContainer: "#22344D",
+  onPrimaryContainer: "#DCE9FA",
+  secondary: "#A1A1AA",
+  onSecondary: "#1C1C1C",
+  secondaryContainer: "#2C2C33",
+  onSecondaryContainer: "#D4D4D8",
+  background: "#121216",
+  onBackground: "#F2F2F6",
+  surface: "#1C1C21",
+  onSurface: "#F2F2F6",
+  surfaceVariant: "#26262D",
+  onSurfaceVariant: "#A6A6B0",
+  surfaceDisabled: "#2A2A31",
+  onSurfaceDisabled: "#6F6F78",
+  outline: "#6E6E78",
+  outlineVariant: "#2E2E36",
+  error: "#F2B8B5",
+  onError: "#601410",
+  errorContainer: "#8C1D18",
+  onErrorContainer: "#F9DEDC",
+};
+export type ThemeMode = "light" | "dark";
+// Shared palette read across the app. applyThemeToShared() swaps its values
+// in place so existing StyleSheet/inline styles observe the active mode.
+export const colors = { ...lightColors };
 export const spacing = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 };
 export const shape = { field: 12, card: 20, button: 16 };
 const fonts = configureFonts({
@@ -65,7 +99,7 @@ export const theme = {
   fonts,
   colors: {
     ...MD3LightTheme.colors,
-    ...colors,
+    ...lightColors,
     inverseSurface: "#263238",
     inverseOnSurface: "#FFFFFF",
     inversePrimary: "#BFE4D9",
@@ -79,10 +113,51 @@ export const theme = {
     },
   },
 };
-export const navigationTheme = {
-  headerStyle: { backgroundColor: colors.background },
-  headerTintColor: colors.onBackground,
+export const darkTheme = {
+  ...MD3DarkTheme,
+  roundness: 5,
+  fonts,
+  colors: {
+    ...MD3DarkTheme.colors,
+    ...darkColors,
+    inverseSurface: "#E6E6EC",
+    inverseOnSurface: "#1C1C21",
+    inversePrimary: "#1C1C1C",
+    elevation: {
+      level0: "transparent",
+      level1: "#1E1E24",
+      level2: "#232329",
+      level3: "#29292F",
+      level4: "#2E2E35",
+      level5: "#34343B",
+    },
+  },
+};
+export const lightNavigationTheme = {
+  headerStyle: { backgroundColor: lightColors.background },
+  headerTintColor: lightColors.onBackground,
   headerShadowVisible: false,
   headerTitleStyle: { fontFamily: "Inter-SemiBold" },
-  contentStyle: { backgroundColor: colors.background },
+  contentStyle: { backgroundColor: lightColors.background },
 };
+export const darkNavigationTheme = {
+  headerStyle: { backgroundColor: darkColors.background },
+  headerTintColor: darkColors.onBackground,
+  headerShadowVisible: false,
+  headerTitleStyle: { fontFamily: "Inter-SemiBold" },
+  contentStyle: { backgroundColor: darkColors.background },
+};
+// Mutable navigation theme kept for existing imports; prefer
+// navigationThemeFor() in new code.
+export const navigationTheme = { ...lightNavigationTheme };
+export const paperThemeFor = (mode: ThemeMode) => mode === "dark" ? darkTheme : theme;
+export const navigationThemeFor = (mode: ThemeMode) => mode === "dark" ? darkNavigationTheme : lightNavigationTheme;
+export function applyThemeToShared(mode: ThemeMode) {
+  Object.assign(colors, mode === "dark" ? darkColors : lightColors);
+  const nav = navigationThemeFor(mode);
+  navigationTheme.headerStyle = { ...nav.headerStyle };
+  navigationTheme.headerTintColor = nav.headerTintColor;
+  navigationTheme.headerShadowVisible = nav.headerShadowVisible;
+  navigationTheme.headerTitleStyle = { ...nav.headerTitleStyle };
+  navigationTheme.contentStyle = { ...nav.contentStyle };
+}

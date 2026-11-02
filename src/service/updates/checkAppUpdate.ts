@@ -6,7 +6,7 @@ import { APP_RELEASE_URL } from '@root/constants/urls';
 import { parseAppRelease, updateSeverity } from './appUpdates';
 import { useUpdateStore } from './updateStore';
 const CACHE='inteliagent-github-release';
-let pending:Promise<void>|undefined, restoration:Promise<void>|undefined, lastCheck=0;
+let pending:Promise<boolean>|undefined, restoration:Promise<void>|undefined, lastCheck=0;
 export const installedRelease = () => ({
   version: (__DEV__ ? Constants.expoConfig?.version : Application.nativeApplicationVersion) || Constants.expoConfig?.version || '',
   code: Number((__DEV__ ? Constants.expoConfig?.android?.versionCode : Application.nativeBuildVersion) ?? Constants.expoConfig?.android?.versionCode),
@@ -22,12 +22,12 @@ async function restore() {
   return restoration;
 }
 export function beginUpdateSession() { useUpdateStore.setState({dismissedBuild:null}); }
-export async function checkForAppUpdate(force=false):Promise<void> {
-  if(Platform.OS!=='android') return;
+export async function checkForAppUpdate(force=false):Promise<boolean> {
+  if(Platform.OS!=='android') return true;
   await restore();
   if(pending) return pending;
-  if(!force && Date.now()-lastCheck<60000) return;
-  const installed=installedRelease();if(!Number.isSafeInteger(installed.code)||installed.code<1) return;
+  if(!force && Date.now()-lastCheck<60000) return true;
+  const installed=installedRelease();if(!Number.isSafeInteger(installed.code)||installed.code<1) return false;
   pending=(async()=>{
     lastCheck=Date.now();useUpdateStore.setState({checking:true});
     const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
@@ -44,8 +44,10 @@ export async function checkForAppUpdate(force=false):Promise<void> {
       useUpdateStore.setState({release,severity,error:''});
       if(release) await AsyncStorage.setItem(CACHE,JSON.stringify(release));
       else await AsyncStorage.removeItem(CACHE);
-    } catch { /* Retain known required updates while offline. */ }
+      return true;
+    } catch { return false; /* Retain known required updates while offline. */ }
     finally {clearTimeout(timeout);useUpdateStore.setState({checking:false});}
-  })().finally(()=>{pending=undefined;});
+  })();
+  pending = pending.finally(() => { pending = undefined; });
   return pending;
 }

@@ -1,9 +1,11 @@
 import { Stack } from "expo-router";
-import { navigationTheme } from "@root/theme";
+import { navigationThemeFor } from "@root/theme";
+import { useThemeStore } from "@root/service/theme/themeStore";
 
 export default function LayoutPlanning() {
+  const mode = useThemeStore((state) => state.mode);
   return (
-    <Stack screenOptions={navigationTheme}>
+    <Stack screenOptions={navigationThemeFor(mode)}>
       <Stack.Screen
         name="index"
         options={{ headerShown: true, title: "Planejamento" }}

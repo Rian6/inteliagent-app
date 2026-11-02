@@ -99,6 +99,23 @@ export default function Home() {
           </Text>
           <Pressable
             accessibilityRole="button"
+            accessibilityLabel="Configurações"
+            onPress={() => router.push("/settings")}
+            style={{
+              width: 44,
+              height: 44,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <MaterialCommunityIcons
+              name="cog-outline"
+              size={24}
+              color={colors.onSurfaceVariant}
+            />
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
             accessibilityLabel="Meu perfil"
             onPress={() => router.push("/profile")}
             style={{

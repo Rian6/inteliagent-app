@@ -14,7 +14,8 @@ import { useSessionStore } from '@root/context/sessionContext';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { theme, navigationTheme } from '@root/theme';
+import { applyThemeToShared, paperThemeFor, navigationThemeFor } from '@root/theme';
+import { useThemeStore } from '@root/service/theme/themeStore';
 import { useFonts } from 'expo-font';
 
 export default function Layout() {
@@ -29,11 +30,15 @@ export default function Layout() {
   });
   const [ready,setReady] = useState(false), [failure,setFailure] = useState(''), [attempt,setAttempt] = useState(0);
   const profile=useSessionStore(state=>state.profile);
+  const mode=useThemeStore(state=>state.mode);
+  const activeTheme=paperThemeFor(mode), navTheme=navigationThemeFor(mode);
+  applyThemeToShared(mode);
+  useEffect(()=>{void useThemeStore.getState().hydrate();},[]);
   useEffect(()=>{let active=true;setFailure('');restoreAccount().then(()=>{if(active)setReady(true);}).catch(()=>{if(active)setFailure('Não foi possível abrir os dados locais. Nenhum arquivo foi apagado.');});return()=>{active=false;};},[attempt]);
-  if(!ready || (!fontsLoaded && !fontError))return <PaperProvider theme={theme}><View style={{flex:1,justifyContent:'center',padding:24,backgroundColor:theme.colors.background}}>{failure?<><Text>{failure}</Text><Button contentStyle={{ minHeight: 48 }} onPress={()=>setAttempt(value=>value+1)}>Tentar novamente</Button></>:<ActivityIndicator accessibilityLabel="Abrindo dados locais"/>}</View></PaperProvider>;
+  if(!ready || (!fontsLoaded && !fontError))return <PaperProvider theme={activeTheme}><View style={{flex:1,justifyContent:'center',padding:24,backgroundColor:activeTheme.colors.background}}>{failure?<><Text>{failure}</Text><Button contentStyle={{ minHeight: 48 }} onPress={()=>setAttempt(value=>value+1)}>Tentar novamente</Button></>:<ActivityIndicator accessibilityLabel="Abrindo dados locais"/>}</View></PaperProvider>;
 
   return (
-    <SafeAreaProvider><PaperProvider theme={theme}><StatusBar style="dark"/><SyncLifecycle/><ProfileLifecycle/><MessagePushLifecycle/><AppUpdateLifecycle/><View style={{flex:1}}><AppUpdateBanner/><AppUpdateGate><Stack screenOptions={navigationTheme}>
+    <SafeAreaProvider><PaperProvider theme={activeTheme}><StatusBar style={mode==='dark'?'light':'dark'}/><SyncLifecycle/><ProfileLifecycle/><MessagePushLifecycle/><AppUpdateLifecycle/><View style={{flex:1}}><AppUpdateBanner/><AppUpdateGate><Stack screenOptions={navTheme}>
       <Stack.Screen name="index" options={{headerShown: false}} />
       <Stack.Screen name="login/index" options={{headerShown: false}} />
       <Stack.Screen name="login/recoverPassword" options={{headerShown: false}}/>
@@ -46,6 +51,7 @@ export default function Layout() {
 
       <Stack.Protected guard={!!profile}>
       <Stack.Screen name="profile/index" options={{title:"Meu perfil",headerBackTitle:"Voltar"}}/>
+      <Stack.Screen name="settings" options={{title:"Configurações",headerBackTitle:"Voltar"}}/>
       <Stack.Screen name="sync-status" options={{title:"Revisar registros"}}/>
       <Stack.Screen name="tabs" options={{headerShown: false}}/>
 
