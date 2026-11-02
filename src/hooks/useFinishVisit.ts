@@ -31,13 +31,10 @@ export function useFinishVisit() {
     try {
       const planId = state.visita.idPlanejamento;
       await inserirVisita(state.visita);
-      state.resetVisita();
-      router.dismissTo({
-        pathname: "/atendimento/visitas",
+      router.replace({
+        pathname: "/atendimento/visitaConcluida",
         params: {
           idPlanejamento: planId,
-          savedAt: String(Date.now()),
-          savedMessage: "Visita salva com sucesso.",
         },
       });
     } catch (failure) {

@@ -14,6 +14,10 @@ export default function LayoutPlanning() {
         options={{ headerShown: true, title: "Visitas" }}
       />
       <Stack.Screen
+        name="visitaConcluida"
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <Stack.Screen
         name="rotaVisita"
         options={{ headerShown: true, title: "Rota de visitas" }}
       />
