@@ -2,6 +2,7 @@
   "expo": {
     "name": "Inteliagent",
     "slug": "inteliagent-app",
+    "owner": "rian123r",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -33,12 +34,13 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "expo-dev-client",
       "expo-router",
       "expo-secure-store",
       [
         "expo-image-picker",
         {
-          "microphonePermission": false
+          "microphonePermission": "Permitir que o Inteliagent grave mensagens de voz."
         }
       ],
       "./plugins/withWindowsCmake.cjs",
@@ -47,8 +49,20 @@
         {
           "microphonePermission": "Permitir que o Inteliagent grave mensagens de voz."
         }
-      ]
+      ],
+      "expo-notifications",
+      "./plugins/withReliableAndroidPush.cjs"
     ],
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "15c0d89f-a3ef-4ea0-bb25-346c6f119af7"
+      }
+    }
   }
 }

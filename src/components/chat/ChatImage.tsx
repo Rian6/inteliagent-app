@@ -69,13 +69,19 @@ export default function ChatImage({
         downloadedUri = file.uri;
         const cached = file;
         dispose = () => {
-          cached.delete().catch(() => {});
+          try {
+            cached.delete();
+          } catch {}
         };
       }
       if (controller.signal.aborted) dispose();
       else setLoaded({ key, uri: downloadedUri });
     })().catch(() => {
-      if (file) file.delete().catch(() => {});
+      if (file) {
+        try {
+          file.delete();
+        } catch {}
+      }
       if (!controller.signal.aborted)
         setError("Não foi possível carregar a imagem. Tente novamente.");
     });

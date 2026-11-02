@@ -6,6 +6,8 @@ import { View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import { restoreAccount } from '@root/offline/runtime';
 import SyncLifecycle from '@root/offline/SyncLifecycle';
+import MessagePushLifecycle from '@root/components/chat/MessagePushLifecycle';
+import ProfileLifecycle from '@root/components/chat/ProfileLifecycle';
 import { useSessionStore } from '@root/context/sessionContext';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -29,7 +31,7 @@ export default function Layout() {
   if(!ready || (!fontsLoaded && !fontError))return <PaperProvider theme={theme}><View style={{flex:1,justifyContent:'center',padding:24,backgroundColor:theme.colors.background}}>{failure?<><Text>{failure}</Text><Button contentStyle={{ minHeight: 48 }} onPress={()=>setAttempt(value=>value+1)}>Tentar novamente</Button></>:<ActivityIndicator accessibilityLabel="Abrindo dados locais"/>}</View></PaperProvider>;
 
   return (
-    <SafeAreaProvider><PaperProvider theme={theme}><StatusBar style="dark"/><SyncLifecycle/><Stack screenOptions={navigationTheme}>
+    <SafeAreaProvider><PaperProvider theme={theme}><StatusBar style="dark"/><SyncLifecycle/><ProfileLifecycle/><MessagePushLifecycle/><Stack screenOptions={navigationTheme}>
       <Stack.Screen name="index" options={{headerShown: false}} />
       <Stack.Screen name="login/index" options={{headerShown: false}} />
       <Stack.Screen name="login/recoverPassword" options={{headerShown: false}}/>

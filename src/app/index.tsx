@@ -1,6 +1,6 @@
-﻿import { useEffect } from "react";
+﻿import { useCallback } from "react";
 import { View } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useSessionStore } from "@root/context/sessionContext";
 import FormScreen from "@root/components/_default/screen/FormScreen";
 import { BrandMark } from "@root/components/auth/AuthScreen";
@@ -8,9 +8,9 @@ import { Button, Heading, Text } from "@root/components/ui";
 import { colors as c } from "@root/theme";
 export default function Welcome() {
   const profile = useSessionStore((state) => state.profile);
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     if (profile) router.replace("/tabs/application/planning");
-  }, [profile]);
+  }, [profile?.id]));
   return (
     <FormScreen>
       <View

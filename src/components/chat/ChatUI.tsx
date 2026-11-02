@@ -1,5 +1,6 @@
-import { type ComponentProps } from "react";
-import { View, Pressable, ActivityIndicator, StyleSheet } from "react-native";
+import { type ComponentProps, useState } from "react";
+import { View, Image, Pressable, ActivityIndicator, StyleSheet } from "react-native";
+import { useContactPhoto } from "./useContactPhoto";
 import Svg, { Defs, Pattern, Circle, Path, Rect } from "react-native-svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "@root/components/ui";
@@ -58,10 +59,14 @@ export function ChatIcon({
 export function ContactAvatar({
   name,
   size = 46,
+  photoUrl,
 }: {
   name: string;
   size?: number;
+  photoUrl?: string | null;
 }) {
+  const uri = useContactPhoto(photoUrl);
+  const [failedUri, setFailedUri] = useState<string | null>(null);
   return (
     <View
       style={{
@@ -73,7 +78,13 @@ export function ContactAvatar({
         justifyContent: "center",
       }}
     >
-      <Text
+      {uri && uri !== failedUri ? <Image
+        testID="contact-photo"
+        accessibilityLabel={`Foto de ${name}`}
+        source={{ uri }}
+        style={{ width: size, height: size, borderRadius: size / 2 }}
+        onError={() => setFailedUri(uri)}
+      /> : <Text
         style={{
           fontSize: size * 0.31,
           color: "#626974",
@@ -81,7 +92,7 @@ export function ContactAvatar({
         }}
       >
         {chatInitials(name)}
-      </Text>
+      </Text>}
     </View>
   );
 }

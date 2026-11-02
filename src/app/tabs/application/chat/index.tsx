@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, type ElementRef } from "react";
-import { View, FlatList, Pressable, TextInput } from "react-native";
+import { View, FlatList, Pressable, TextInput, AppState } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -10,6 +10,7 @@ import { Text, Heading, Field, Button, ErrorText } from "@root/components/ui";
 import { ActivityIndicator } from "react-native";
 import { colors as c } from "@root/theme";
 import { ChatIcon, ContactAvatar } from "@root/components/chat/ChatUI";
+import MessagePushButton from "@root/components/chat/MessagePushButton";
 import {
   chatPreview,
   chatTime,
@@ -23,6 +24,7 @@ export default function Chat() {
       {
         id: number;
         nome: string;
+        photoUrl?: string | null;
         lastMessage?: string;
         lastMessageAt?: string;
         lastAttachmentMime?: string;
@@ -31,12 +33,13 @@ export default function Chat() {
     [query, setQuery] = useState(""),
     [busy, setBusy] = useState(true),
     [error, setError] = useState("");
-  const load = useCallback(async () => {
-    setBusy(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setBusy(true);
     setError("");
     try {
       const { data } = await api.get(SOCKETSERVICEURL + "/users");
-      setContacts(data.filter((item) => item.id !== profile?.id));
+      if (useSessionStore.getState().profile?.id === profile?.id)
+        setContacts(data.filter((item) => item.id !== profile?.id));
     } catch {
       setError(
         "Não foi possível carregar sua equipe. Verifique a conexão e tente novamente.",
@@ -47,7 +50,14 @@ export default function Chat() {
   }, [profile?.id]);
   useFocusEffect(
     useCallback(() => {
-      load();
+      void load();
+      const app = AppState.addEventListener("change", (state) => {
+        if (state === "active") void load(true);
+      });
+      const timer = setInterval(() => {
+        if (AppState.currentState === "active") void load(true);
+      }, 30000);
+      return () => { app.remove(); clearInterval(timer); };
     }, [load]),
   );
   const shown = contacts.filter((item) =>
@@ -125,8 +135,9 @@ export default function Chat() {
         )}
       </View>
       <ErrorText>{error}</ErrorText>
+      <MessagePushButton />
       {!!error && (
-        <Button variant="secondary" onPress={load}>
+        <Button variant="secondary" onPress={() => load()}>
           Tentar novamente
         </Button>
       )}
@@ -135,7 +146,7 @@ export default function Chat() {
         data={shown}
         keyExtractor={(item) => String(item.id)}
         refreshing={busy && contacts.length > 0}
-        onRefresh={load}
+        onRefresh={() => load()}
         contentContainerStyle={{ paddingBottom: 16 }}
         ItemSeparatorComponent={() => (
           <View
@@ -177,7 +188,7 @@ export default function Chat() {
               gap: 14,
             })}
           >
-            <ContactAvatar name={item.nome} size={52} />
+            <ContactAvatar name={item.nome} photoUrl={item.photoUrl} size={52} />
             <View style={{ flex: 1, gap: 5 }}>
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 8 }}

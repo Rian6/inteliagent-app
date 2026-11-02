@@ -6,6 +6,8 @@ node_modules/
 # Expo
 .expo/
 dist/
+google-services.json
+GoogleService-Info.plist
 web-build/
 
 # Native

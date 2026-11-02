@@ -58,7 +58,7 @@ export async function saveProfilePhoto(uri: string) {
   const requestRevision = ++revision;
   const form = new FormData();
   form.append("file", { uri, type: "image/jpeg", name: "perfil.jpg" } as any);
-  const { data } = await api.put(AUTHSERVICE + "/api/user/me/photo", form);
+  const { data } = await api.put(AUTHSERVICE + "/api/user/me/photo", form, { adapter: "xhr" });
   return applyProfile(data, requestRevision);
 }
 export async function removeProfilePhoto() {

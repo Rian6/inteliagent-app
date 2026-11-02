@@ -16,7 +16,8 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { io, type Socket } from "socket.io-client";
 import * as ImagePicker from "expo-image-picker";
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
@@ -47,6 +48,7 @@ import {
 } from "@root/components/chat/ChatUI";
 import { chatDate, chatDay, chatTime } from "@root/data/chat-presentation";
 import EmojiPicker from "@root/components/chat/EmojiPicker";
+import {setNotificationConversation} from "@root/service/notifications/messagePush";
 type Message = {
   id: number;
   sender: number;
@@ -113,6 +115,21 @@ export default function ChatMessages() {
   const recorderState = useAudioRecorderState(recorder, 200);
   duration.current = recorderState.durationMillis;
   const reversed = useMemo(() => [...messages].reverse(), [messages]);
+  const [contactPhoto, setContactPhoto] = useState<{ recipient: string; url: string | null } | null>(null);
+  useFocusEffect(useCallback(() => {
+    const controller = new AbortController();
+    const refresh = async () => {
+      try {
+        const { data } = await api.get(SOCKETSERVICEURL + "/users", { signal: controller.signal });
+        if (!controller.signal.aborted) setContactPhoto({ recipient, url: data.find((user: { id: number }) => String(user.id) === recipient)?.photoUrl || null });
+      } catch {}
+    };
+    void refresh();
+    const app = AppState.addEventListener("change", (state) => { if (state === "active") void refresh(); });
+    const timer = setInterval(() => { if (AppState.currentState === "active") void refresh(); }, 30000);
+    return () => { controller.abort(); app.remove(); clearInterval(timer); };
+  }, [recipient, profile?.id]));
+  useFocusEffect(useCallback(()=>{setNotificationConversation(recipient);return ()=>setNotificationConversation(null);},[recipient]));
   useEffect(() => {
     navigation.setOptions({
       title: name,
@@ -120,7 +137,7 @@ export default function ChatMessages() {
       headerStyle: { backgroundColor: c.surface },
       headerTitle: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <ContactAvatar name={name} size={36} />
+          <ContactAvatar name={name} photoUrl={contactPhoto?.recipient === recipient ? contactPhoto.url : null} size={36} />
           <Text bold numberOfLines={1} style={{ maxWidth: 190 }}>
             {name}
           </Text>
@@ -134,7 +151,7 @@ export default function ChatMessages() {
         />
       ),
     });
-  }, [navigation, name]);
+  }, [navigation, name, recipient, contactPhoto]);
   useEffect(() => {
     const show = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
@@ -431,8 +448,8 @@ export default function ChatMessages() {
   }
   return (
     <SafeAreaView
-      edges={["left", "right"]}
-      style={{ flex: 1, backgroundColor: c.background }}
+      edges={keyboardOpen ? ["left", "right"] : ["left", "right", "bottom"]}
+      style={{ flex: 1, backgroundColor: "#EEF2F6" }}
     >
       <View style={{ flex: 1, minHeight: 0 }}>
         <KeyboardAvoidingView
@@ -610,7 +627,7 @@ export default function ChatMessages() {
               backgroundColor: "#EEF2F6",
               paddingHorizontal: 8,
               paddingTop: 6,
-              paddingBottom: keyboardOpen ? 6 : Math.max(8, insets.bottom),
+              paddingBottom: 6,
               gap: 8,
             }}
           >
