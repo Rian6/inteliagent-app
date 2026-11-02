@@ -190,7 +190,7 @@ export default function VisitRoute() {
           <View
             style={{
               backgroundColor:
-                selected === item.ID ? colors.primaryContainer : "#FFFFFF",
+                selected === item.ID ? colors.primaryContainer : colors.surface,
               borderRadius: 16,
               borderWidth: 1,
               borderColor: colors.outlineVariant,

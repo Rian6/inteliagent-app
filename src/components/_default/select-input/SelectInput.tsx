@@ -19,7 +19,7 @@ const SelectInput = ({
       <View style={styles.labelContainer}>
         {label && <Text style={styles.label}>{label}</Text>}
       </View>
-      <View style={[styles.pickerContainer, invalid && styles.invalidContainer]}>
+      <View style={[styles.pickerContainer, { backgroundColor: colors.surface }, invalid && styles.invalidContainer]}>
         <Picker
           accessibilityLabel={label || placeholder}
           selectedValue={selectedValue}
@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
     marginVertical: 8,
-    backgroundColor: "#FFFFFF",
   },
   labelContainer: {
     marginBottom: 8,
@@ -65,7 +64,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: textPrimaryColor,
     borderRadius: 8,
-    backgroundColor: "#FFFFFF",
   },
   invalidContainer: {
     borderColor: errorColor,  // Cor da borda quando inválido

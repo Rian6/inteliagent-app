@@ -100,7 +100,7 @@ export function ChatWallpaper() {
   return (
     <View
       pointerEvents="none"
-      style={[StyleSheet.absoluteFill, { backgroundColor: "#EEF2F6" }]}
+      style={[StyleSheet.absoluteFill, { backgroundColor: c.chatBackground }]}
     >
       <Svg width="100%" height="100%">
         <Defs>
@@ -114,13 +114,13 @@ export function ChatWallpaper() {
               cx={16}
               cy={18}
               r={2}
-              stroke="#CAD3E0"
+              stroke={c.chatPattern}
               fill="none"
               opacity={0.46}
             />
             <Path
               d="M64 20h14v10H68l-4 4V20zM20 63l6-6 6 6v9H20zM42 38l3 3m0-3l-3 3"
-              stroke="#CAD3E0"
+              stroke={c.chatPattern}
               strokeWidth={1}
               fill="none"
               opacity={0.46}
@@ -129,7 +129,7 @@ export function ChatWallpaper() {
               cx={71}
               cy={73}
               r={3}
-              stroke="#CAD3E0"
+              stroke={c.chatPattern}
               fill="none"
               opacity={0.46}
             />

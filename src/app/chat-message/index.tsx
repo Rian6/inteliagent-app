@@ -449,7 +449,7 @@ export default function ChatMessages() {
   return (
     <SafeAreaView
       edges={keyboardOpen ? ["left", "right"] : ["left", "right", "bottom"]}
-      style={{ flex: 1, backgroundColor: "#EEF2F6" }}
+      style={{ flex: 1, backgroundColor: c.chatBackground }}
     >
       <View style={{ flex: 1, minHeight: 0 }}>
         <KeyboardAvoidingView
@@ -549,7 +549,7 @@ export default function ChatMessages() {
                     <View
                       style={{
                         alignSelf: "center",
-                        backgroundColor: "#FFFFFFED",
+                        backgroundColor: c.surface,
                         borderRadius: 8,
                         paddingHorizontal: 12,
                         paddingVertical: 5,
@@ -624,7 +624,7 @@ export default function ChatMessages() {
             testID="chat-composer"
             style={{
               flexShrink: 0,
-              backgroundColor: "#EEF2F6",
+              backgroundColor: c.chatBackground,
               paddingHorizontal: 8,
               paddingTop: 6,
               paddingBottom: 6,

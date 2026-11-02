@@ -128,7 +128,7 @@ export function Button({
 }) {
   const color =
     variant === "primary"
-      ? "#FFFFFF"
+      ? c.onPrimary
       : variant === "danger"
         ? c.error
         : c.primary;

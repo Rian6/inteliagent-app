@@ -37,7 +37,7 @@ const InputTextForm = ({
         mode="outlined"
         outlineStyle={{ borderRadius: 12 }}
         error={invalid}
-        style={[styles.input]}
+        style={[styles.input, { backgroundColor: colors.surface }]}
         accessibilityLabel={label}
         activeOutlineColor={invalid ? "#B3261E" : primaryColor} // Defina a cor de outline ativa quando houver erro
         textColor={invalid ? "#B3261E" : colors.onSurface}
@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 56,
     borderRadius: 8,
-    backgroundColor: "#FFFFFF",
     marginVertical: 8,
   },
   invalidInput: {
