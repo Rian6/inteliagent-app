@@ -31,10 +31,10 @@ export const lightColors = {
   onError: "#FFFFFF",
   errorContainer: "#FEECE9",
   onErrorContainer: "#77251B",
-  success: "#386A20",
-  successContainer: "#E8F5EE",
-  warning: "#7A4A00",
-  warningContainer: "#FFF2DD",
+  success: "#15803D",
+  successContainer: "#EFFBF3",
+  warning: "#B45309",
+  warningContainer: "#FEF6E4",
 };
 export const darkColors = {
   blue: "#5EA0FF",
