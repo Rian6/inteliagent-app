@@ -3,7 +3,7 @@
     "name": "Inteliagent",
     "slug": "inteliagent-app",
     "owner": "rian123r",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -17,6 +17,7 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 8,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1C1C1C"
@@ -51,7 +52,8 @@
         }
       ],
       "expo-notifications",
-      "./plugins/withReliableAndroidPush.cjs"
+      "./plugins/withReliableAndroidPush.cjs",
+      "./plugins/withLanServer.cjs"
     ],
     "newArchEnabled": true,
     "extra": {
