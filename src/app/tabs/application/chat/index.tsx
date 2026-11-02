@@ -16,8 +16,10 @@ import {
   chatDate,
   chatDay,
 } from "@root/data/chat-presentation";
+import { selectUpdateBannerVisible, useUpdateStore } from "@root/service/updates/updateStore";
 export default function Chat() {
   const search = useRef<ElementRef<typeof TextInput>>(null);
+  const bannerVisible = useUpdateStore(selectUpdateBannerVisible);
   const profile = useSessionStore((state) => state.profile);
   const [contacts, setContacts] = useState<
       {
@@ -73,7 +75,7 @@ export default function Chat() {
   );
   return (
     <SafeAreaView
-      edges={["top", "left", "right"]}
+      edges={bannerVisible ? ["left", "right"] : ["top", "left", "right"]}
       style={{ flex: 1, backgroundColor: c.surface }}
     >
       <View

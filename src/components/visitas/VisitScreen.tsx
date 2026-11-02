@@ -28,6 +28,7 @@ import {
 } from "@root/data/visit-flow";
 import { goVisit, closeVisit } from "./visitNavigation";
 import { colors as c } from "@root/theme";
+import { selectUpdateBannerVisible, useUpdateStore } from "@root/service/updates/updateStore";
 export default function VisitScreen({
   page,
   title,
@@ -50,6 +51,7 @@ export default function VisitScreen({
   testID?: string;
 }) {
   const visita = useVisitaStore((state) => state.visita);
+  const bannerVisible = useUpdateStore(selectUpdateBannerVisible);
   const [attempted, setAttempted] = useState(false);
   const stages = visitStages(visita.situacaoVisita),
     index = Math.max(
@@ -94,7 +96,7 @@ export default function VisitScreen({
   const firstError = Object.values(errors)[0];
   return (
     <SafeAreaView
-      edges={["top", "left", "right", "bottom"]}
+      edges={bannerVisible ? ["left", "right", "bottom"] : ["top", "left", "right", "bottom"]}
       style={{ flex: 1, backgroundColor: c.background }}
     >
       <KeyboardAvoidingView

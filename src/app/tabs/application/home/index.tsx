@@ -25,9 +25,11 @@ import { loadProfile } from "@root/service/usuario/profileService";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ContactAvatar } from "@root/components/chat/ChatUI";
+import { selectUpdateBannerVisible, useUpdateStore } from "@root/service/updates/updateStore";
 const db = database;
 export default function Home() {
   const { width } = useWindowDimensions();
+  const bannerVisible = useUpdateStore(selectUpdateBannerVisible);
   const profile = useSessionStore((state) => state.profile);
   const [metrics, setMetrics] = useState<Record<string, number>>({});
   const lastSync = useSyncStore((state) => state.lastSync);
@@ -67,7 +69,7 @@ export default function Home() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <SafeAreaView
-        edges={["top", "left", "right"]}
+        edges={bannerVisible ? ["left", "right"] : ["top", "left", "right"]}
         style={{ backgroundColor: colors.background }}
       >
         <View

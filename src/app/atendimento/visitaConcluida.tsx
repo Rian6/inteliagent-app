@@ -6,9 +6,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button, Heading, Text } from "@root/components/ui";
 import { colors as c } from "@root/theme";
 import useVisitaStore from "@root/context/visitaContext";
+import { selectUpdateBannerVisible, useUpdateStore } from "@root/service/updates/updateStore";
 
 export default function VisitCompleted() {
   const { idPlanejamento } = useLocalSearchParams<{ idPlanejamento: string }>();
+  const bannerVisible = useUpdateStore(selectUpdateBannerVisible);
   // Keep the completed form intact until its route has unmounted. Resetting
   // during save makes its stage guard navigate with an empty planning ID.
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function VisitCompleted() {
 
   return (
     <SafeAreaView
-      edges={["top", "left", "right", "bottom"]}
+      edges={bannerVisible ? ["left", "right", "bottom"] : ["top", "left", "right", "bottom"]}
       style={{ flex: 1, backgroundColor: c.surface, padding: 24 }}
     >
       <View

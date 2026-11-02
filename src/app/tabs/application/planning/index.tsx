@@ -19,12 +19,14 @@ import { useSyncStore } from "@root/context/syncContext";
 import { getPlanejamentos } from "@root/db/atendimentoPersistence";
 import { scheduleSync } from "@root/offline/runtime";
 import InternetStatusMonitor from "@root/components/_default/internet/InternetStatusMonitor";
+import { selectUpdateBannerVisible, useUpdateStore } from "@root/service/updates/updateStore";
 const statuses: Record<number, string> = {
   1: "Concluído",
   2: "Pendente",
   3: "Em andamento",
 };
 export default function Planning() {
+  const bannerVisible = useUpdateStore(selectUpdateBannerVisible);
   const profile = useSessionStore((state) => state.profile);
   const admin = !!profile?.permissions?.editPlanning;
   const canCreate = !!profile?.permissions?.createPlanning;
@@ -62,7 +64,7 @@ export default function Planning() {
     });
   return (
     <SafeAreaView
-      edges={["top", "left", "right"]}
+      edges={bannerVisible ? ["left", "right"] : ["top", "left", "right"]}
       style={{
         flex: 1,
         padding: 16,

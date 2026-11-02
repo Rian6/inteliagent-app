@@ -3,10 +3,11 @@ import { Linking,Pressable,Text,View,StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@root/theme';
 import { useThemeStore } from '@root/service/theme/themeStore';
-import { useUpdateStore } from '@root/service/updates/updateStore';
+import { selectUpdateBannerVisible, useUpdateStore } from '@root/service/updates/updateStore';
 export function AppUpdateBanner() {
-  const state=useUpdateStore(),release=state.release;
-  if(!release||state.severity==='none'||(state.severity==='normal'&&state.dismissedBuild===release.versionCode)) return null;
+  const state=useUpdateStore();
+  if(!state.release || !selectUpdateBannerVisible(state)) return null;
+  const release=state.release;
   const mandatory=state.severity==='mandatory';
   return <SafeAreaView edges={['top']} style={{backgroundColor:mandatory?'#FEE2E2':'#FFF3CD'}}>
     <View style={styles.banner} accessibilityRole="alert">
