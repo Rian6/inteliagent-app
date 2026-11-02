@@ -1,0 +1,2 @@
+ALTER TABLE `PLANEJAMENTO` ADD `BOLETIM_JSON` text;--> statement-breakpoint
+ALTER TABLE `VISITA` ADD `BOLETIM_JSON` text;

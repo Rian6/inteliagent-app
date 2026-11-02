@@ -1,0 +1,25 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@root/*": [
+        "./src/*"
+      ]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "android",
+    "dist"
+  ]
+}

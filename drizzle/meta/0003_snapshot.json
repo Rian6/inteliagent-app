@@ -1,0 +1,1031 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "558f3f1e-67ac-493c-b2d5-c3ee022b60b9",
+  "prevId": "8d77e547-f51d-4ad8-95f6-8875f5a36bff",
+  "tables": {
+    "AMOSTRA": {
+      "name": "AMOSTRA",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "ID_VISITA": {
+          "name": "ID_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NUMERO_INICIO": {
+          "name": "NUMERO_INICIO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NUMERO_FINAL": {
+          "name": "NUMERO_FINAL",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "QUANTIDADE": {
+          "name": "QUANTIDADE",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "IMAGENS_JSON": {
+          "name": "IMAGENS_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "IDX_AMOSTRA_VISITA": {
+          "name": "IDX_AMOSTRA_VISITA",
+          "columns": [
+            "ID_VISITA"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "CATEGORIA": {
+      "name": "CATEGORIA",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "CIDADE": {
+      "name": "CIDADE",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "ENDERECO": {
+      "name": "ENDERECO",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ID_CIDADE": {
+          "name": "ID_CIDADE",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CEP": {
+          "name": "CEP",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NUMERO": {
+          "name": "NUMERO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "LADO": {
+          "name": "LADO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "TIPO_IMOVEL": {
+          "name": "TIPO_IMOVEL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "COMPLEMENTO": {
+          "name": "COMPLEMENTO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "IMAGEM_AMOSTRA": {
+      "name": "IMAGEM_AMOSTRA",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "ID_AMOSTRA": {
+          "name": "ID_AMOSTRA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "IMAGEM": {
+          "name": "IMAGEM",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "INSPECAO": {
+      "name": "INSPECAO",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "ID_VISITA": {
+          "name": "ID_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "TIPO": {
+          "name": "TIPO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NUMERO_DEPOSITOS": {
+          "name": "NUMERO_DEPOSITOS",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "IDX_INSPECAO_VISITA": {
+          "name": "IDX_INSPECAO_VISITA",
+          "columns": [
+            "ID_VISITA"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "TABLES_SINCRONYZE": {
+      "name": "TABLES_SINCRONYZE",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "TABELA": {
+          "name": "TABELA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ID_REGISTRO": {
+          "name": "ID_REGISTRO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "PLANEJAMENTO": {
+      "name": "PLANEJAMENTO",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "ID_CIDADE": {
+          "name": "ID_CIDADE",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ID_CATEGORIA": {
+          "name": "ID_CATEGORIA",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ATIVIDADE": {
+          "name": "ATIVIDADE",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "TIPO": {
+          "name": "TIPO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "DATA_ULT_VISITA": {
+          "name": "DATA_ULT_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ANO": {
+          "name": "ANO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ZONA": {
+          "name": "ZONA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "STATUS": {
+          "name": "STATUS",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "BOLETIM_JSON": {
+          "name": "BOLETIM_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CICLO": {
+          "name": "CICLO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CATALOGO_VERSAO": {
+          "name": "CATALOGO_VERSAO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "SYNC_ENTITIES": {
+      "name": "SYNC_ENTITIES",
+      "columns": {
+        "TABLE_NAME": {
+          "name": "TABLE_NAME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ENTITY_ID": {
+          "name": "ENTITY_ID",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "SERVER_VERSION": {
+          "name": "SERVER_VERSION",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "SNAPSHOT_JSON": {
+          "name": "SNAPSHOT_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "SYNC_ENTITIES_TABLE_NAME_ENTITY_ID_pk": {
+          "columns": [
+            "TABLE_NAME",
+            "ENTITY_ID"
+          ],
+          "name": "SYNC_ENTITIES_TABLE_NAME_ENTITY_ID_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "SYNC_META": {
+      "name": "SYNC_META",
+      "columns": {
+        "KEY": {
+          "name": "KEY",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "VALUE": {
+          "name": "VALUE",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "SYNC_OUTBOX": {
+      "name": "SYNC_OUTBOX",
+      "columns": {
+        "SEQUENCE": {
+          "name": "SEQUENCE",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "MUTATION_ID": {
+          "name": "MUTATION_ID",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "GROUP_ID": {
+          "name": "GROUP_ID",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "AGGREGATE_KEY": {
+          "name": "AGGREGATE_KEY",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "TABLE_NAME": {
+          "name": "TABLE_NAME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ENTITY_ID": {
+          "name": "ENTITY_ID",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "PAYLOAD_JSON": {
+          "name": "PAYLOAD_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "BASE_VERSION": {
+          "name": "BASE_VERSION",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "DEPENDS_ON": {
+          "name": "DEPENDS_ON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "STATE": {
+          "name": "STATE",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "ATTEMPTS": {
+          "name": "ATTEMPTS",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "NEXT_ATTEMPT_AT": {
+          "name": "NEXT_ATTEMPT_AT",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "ERROR": {
+          "name": "ERROR",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SERVER_JSON": {
+          "name": "SERVER_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SERVER_VERSION": {
+          "name": "SERVER_VERSION",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CREATED_AT": {
+          "name": "CREATED_AT",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "SYNC_OUTBOX_MUTATION_ID_unique": {
+          "name": "SYNC_OUTBOX_MUTATION_ID_unique",
+          "columns": [
+            "MUTATION_ID"
+          ],
+          "isUnique": true
+        },
+        "IDX_OUTBOX_READY": {
+          "name": "IDX_OUTBOX_READY",
+          "columns": [
+            "STATE",
+            "NEXT_ATTEMPT_AT",
+            "SEQUENCE"
+          ],
+          "isUnique": false
+        },
+        "IDX_OUTBOX_ENTITY": {
+          "name": "IDX_OUTBOX_ENTITY",
+          "columns": [
+            "TABLE_NAME",
+            "ENTITY_ID",
+            "SEQUENCE"
+          ],
+          "isUnique": false
+        },
+        "IDX_OUTBOX_DEPENDS": {
+          "name": "IDX_OUTBOX_DEPENDS",
+          "columns": [
+            "DEPENDS_ON"
+          ],
+          "isUnique": false
+        },
+        "IDX_OUTBOX_GROUP": {
+          "name": "IDX_OUTBOX_GROUP",
+          "columns": [
+            "GROUP_ID"
+          ],
+          "isUnique": false
+        },
+        "IDX_OUTBOX_AGGREGATE": {
+          "name": "IDX_OUTBOX_AGGREGATE",
+          "columns": [
+            "AGGREGATE_KEY"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "TRATAMENTO": {
+      "name": "TRATAMENTO",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "ID_VISITA": {
+          "name": "ID_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "DEPOSITOS_ELIMINADOS": {
+          "name": "DEPOSITOS_ELIMINADOS",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "IMOVEIS_TRATADOS": {
+          "name": "IMOVEIS_TRATADOS",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "QTD_TRATAMENTO": {
+          "name": "QTD_TRATAMENTO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "TIPO": {
+          "name": "TIPO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "QTD_CARGA": {
+          "name": "QTD_CARGA",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "IDX_TRATAMENTO_VISITA": {
+          "name": "IDX_TRATAMENTO_VISITA",
+          "columns": [
+            "ID_VISITA"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "USUARIO": {
+      "name": "USUARIO",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "EMAIL": {
+          "name": "EMAIL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ID_CEDE": {
+          "name": "ID_CEDE",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ID_IMAGEM_PERFIL_USUARIO": {
+          "name": "ID_IMAGEM_PERFIL_USUARIO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "VISITA_DRAFTS": {
+      "name": "VISITA_DRAFTS",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "PLAN_ID": {
+          "name": "PLAN_ID",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "PAYLOAD_JSON": {
+          "name": "PAYLOAD_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "UPDATED_AT": {
+          "name": "UPDATED_AT",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "VISITA": {
+      "name": "VISITA",
+      "columns": {
+        "ID": {
+          "name": "ID",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))"
+        },
+        "ID_PLANEJAMENTO": {
+          "name": "ID_PLANEJAMENTO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "PRIMEIRA_VISITA": {
+          "name": "PRIMEIRA_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SEGUNDA_VISITA": {
+          "name": "SEGUNDA_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "TIPO_VISITA": {
+          "name": "TIPO_VISITA",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NUMERO_QUARTOS": {
+          "name": "NUMERO_QUARTOS",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CONTEM_AMOSTRA": {
+          "name": "CONTEM_AMOSTRA",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CONTEM_TRATAMENTO": {
+          "name": "CONTEM_TRATAMENTO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SEQUENCIA": {
+          "name": "SEQUENCIA",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "LATITUDE": {
+          "name": "LATITUDE",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "LONGITUDE": {
+          "name": "LONGITUDE",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "BOLETIM_JSON": {
+          "name": "BOLETIM_JSON",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO_REFERENCIA": {
+          "name": "SITUACAO_REFERENCIA",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "SITUACAO": {
+          "name": "SITUACAO",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CEP": {
+          "name": "CEP",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NOME": {
+          "name": "NOME",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "NUMERO": {
+          "name": "NUMERO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "COMPLEMENTO": {
+          "name": "COMPLEMENTO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "LADO": {
+          "name": "LADO",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "TIPO_IMOVEL": {
+          "name": "TIPO_IMOVEL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "IDX_VISITA_PLAN": {
+          "name": "IDX_VISITA_PLAN",
+          "columns": [
+            "ID_PLANEJAMENTO",
+            "SEQUENCIA"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
