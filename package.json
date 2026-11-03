@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "postinstall": "node scripts/harden-deepmerge.cjs",
-    "test:offline": "node --test tests/offline.test.mjs tests/credentials.test.mjs tests/planning-catalog.test.mjs tests/visit-flow.test.mjs tests/permissions.test.mjs"
+    "test:offline": "node --test tests/offline.test.mjs tests/credentials.test.mjs tests/planning-catalog.test.mjs tests/visit-flow.test.mjs tests/permissions.test.mjs tests/planning-flow.test.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
