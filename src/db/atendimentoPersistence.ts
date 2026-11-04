@@ -15,7 +15,9 @@ export async function inserirPlanejamento(item) {
   if (!String(item.nome || "").trim() || !String(item.zona || "").trim())
     throw new Error("Informe nome e zona.");
   validatePlanningClassification(item, catalog);
-  if (!item.id) requirePlanningReport(item, catalog);
+  // O boletim exige estes campos em toda edição: assim o PDF pode sempre ser
+  // baixado e a validação não fica adiada para o momento do download.
+  requirePlanningReport(item, catalog);
   const id = item.id || engine.uuid(),
     date = new Date(item.dataUltVisita || engine.now());
   if (!Number.isFinite(date.getTime())) throw new Error("Data inválida.");

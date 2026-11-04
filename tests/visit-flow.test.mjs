@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {visitPageErrors,accessibleVisitPage,resumedPage,visitStages,nextVisitPage} from '../src/data/visit-flow.ts';
 import {newVisit} from '../src/offline/visits.ts';
 import store from '../src/context/visitaContext.ts';
-const open=patch=>newVisit({nome:'Rua do Campo',numero:'s/n',situacaoVisita:3,...patch});
+const open=patch=>newVisit({nome:'Rua do Campo',numero:'s/n',situacaoVisita:3,tipoImovel:'Residencial',boletim:{quarteirao:'12',ladoQuarteirao:'2',agenteNome:'Agente Teste'},...patch});
 test('a direct future-stage link stops at the first unconfirmed prerequisite',()=>{
  const visit=open();assert.equal(accessibleVisitPage('revisao',visit),'index');
  visit.__completed=['index'];assert.equal(accessibleVisitPage('revisao',visit),'inspecao');
@@ -28,7 +28,9 @@ test('sample interval and integer errors appear before the review stage',()=>{
 test('enabled treatment modes require their product and valid quantities without changing legacy modes',()=>{
  const visit=open({contemTratamento:true,tratamento:{focal:{ativo:true,tipo:'',quantidadeCarga:'abc',quantidadeTratamento:2}}});
  const errors=visitPageErrors('tratamento',visit);assert.ok(errors['tratamento.focal.tipo']);assert.ok(errors['tratamento.focal.quantidadeCarga']);
- const legacy=open({contemTratamento:true,tratamento:{tipo:'Produto legado',quantidadeCarga:2,quantidadeTratamento:3}});assert.deepEqual(visitPageErrors('tratamento',legacy),{});
+ const legacy=open({contemTratamento:true,tratamento:{tipo:'Produto legado',quantidadeCarga:2,quantidadeTratamento:3}});
+ assert.ok(visitPageErrors('tratamento',legacy)['boletim.focalGramas']);
+ assert.deepEqual(visitPageErrors('tratamento',{...legacy,boletim:{...legacy.boletim,focalGramas:'2'}}),{});
 });
 test('editing prior data invalidates later confirmations but keeps all clinical data',()=>{
  const visit=open({__completed:['index','inspecao','amostra','tratamento'],contemAmostra:true,amostra:{numeroInicio:10,numeroFinal:12,quantidade:3}});store.getState().initializeVisita(visit);

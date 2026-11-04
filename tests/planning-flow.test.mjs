@@ -27,7 +27,7 @@ import {
   newVisit,
   Visits,
 } from "../src/offline/visits.ts";
-import { changedVisitStage } from "../src/data/visit-flow.ts";
+import { changedVisitStage, visitPageErrors } from "../src/data/visit-flow.ts";
 import store from "../src/context/visitaContext.ts";
 import { initializeDatabase } from "../src/offline/schema.ts";
 import { adaptDatabase } from "../src/offline/sqliteAdapter.ts";
@@ -236,6 +236,8 @@ const openVisit = (patch = {}) =>
     nome: "Rua de campo",
     numero: "10",
     situacaoVisita: 3,
+    tipoImovel: "Residencial",
+    boletim: { quarteirao: "12", ladoQuarteirao: "2", agenteNome: "Agente Teste" },
     ...patch,
   });
 const fullProgress = ["index", "inspecao", "amostra", "tratamento"];
@@ -492,4 +494,106 @@ test("visita salva sem planejamento é recusada antes de qualquer leitura", asyn
     () => visits.save(newVisit({ nome: "Rua A" })),
     /planejamento/i,
   );
+});
+
+// ---------- Campos obrigatórios para o PDF do boletim ----------
+
+test("campos do boletim exigidos pelo PDF bloqueiam a entrada da visita", () => {
+  const base = openVisit();
+  assert.deepEqual(visitPageErrors("index", base), {});
+  assert.ok(visitPageErrors("index", { ...base, boletim: { ...base.boletim, quarteirao: "" } })["boletim.quarteirao"]);
+  assert.ok(visitPageErrors("index", { ...base, boletim: { ...base.boletim, ladoQuarteirao: "  " } })["boletim.ladoQuarteirao"]);
+  assert.ok(visitPageErrors("index", { ...base, boletim: { ...base.boletim, agenteNome: "" } })["boletim.agenteNome"]);
+  assert.ok(visitPageErrors("index", { ...base, tipoImovel: "" }).tipoImovel);
+});
+
+test("tratamento focal sem gramas do L1 é bloqueado na etapa de tratamento", () => {
+  const base = openVisit({
+    __treatmentAnswered: true,
+    contemTratamento: true,
+    tratamento: {
+      focal: { ativo: true, tipo: "BTI", quantidadeCarga: 1, quantidadeTratamento: 2 },
+    },
+  });
+  const errors = visitPageErrors("tratamento", base);
+  assert.ok(errors["boletim.focalGramas"]);
+  assert.deepEqual(
+    visitPageErrors("tratamento", { ...base, boletim: { ...base.boletim, focalGramas: "1,5" } }),
+    {},
+  );
+  // Sem focal ativo, gramas do L1 não são exigidas.
+  assert.deepEqual(
+    visitPageErrors("tratamento", {
+      ...base,
+      tratamento: { depositosEliminados: 0, imoveisTratados: 0, quantidadeTratamento: 0, quantidadeCarga: 0, tipo: "" },
+    }),
+    {},
+  );
+});
+
+// ---------- Garantia ponta a ponta: o PDF pode ser baixado ----------
+
+import { createDailyReport, reportIssues } from "../src/reports/pncd.ts";
+
+const pdfPlan = (over = {}) => ({
+  nome: "Região Norte",
+  zona: "Norte",
+  idCidade: 4104808,
+  idCategoria: 10001,
+  atividade: 2,
+  tipo: 1,
+  ciclo: 3,
+  ano: "2026",
+  boletim: { codigoLocalidade: "IBGE-0001", supervisorNome: "Supervisor" },
+  ...over,
+});
+const concludedRow = (over = {}) => ({
+  ID: "v-1",
+  ID_PLANEJAMENTO: "p-1",
+  PRIMEIRA_VISITA: "2026-11-03 08:00:00",
+  SITUACAO_REFERENCIA: 3,
+  TIPO_VISITA: "N",
+  SITUACAO: 1,
+  NOME: "Rua A",
+  NUMERO: "10",
+  COMPLEMENTO: "",
+  TIPO_IMOVEL: "Residencial",
+  BOLETIM_JSON: JSON.stringify({
+    quarteirao: "12",
+    ladoQuarteirao: "2",
+    agenteNome: "Agente Teste",
+    horaEntrada: "08:00",
+  }),
+  inspecao: [{ TIPO: 1, NUMERO_DEPOSITOS: 3 }],
+  amostra: [],
+  tratamento: [],
+  ...over,
+});
+
+test("planejamento válido com visita concluída gera o PDF sem bloqueio", async () => {
+  assert.deepEqual(reportIssues(pdfPlan(), [concludedRow()], catalog), []);
+  const report = await createDailyReport(pdfPlan(), [concludedRow()], catalog);
+  assert.ok(report.bytes.length > 1000);
+  assert.match(report.filename, /^PNCD-PR-4104808-/);
+});
+
+test("visita sem quarteirão detalhado bloqueia o PDF com mensagem clara", () => {
+  const row = concludedRow({
+    BOLETIM_JSON: JSON.stringify({ ladoQuarteirao: "2", agenteNome: "Agente Teste" }),
+  });
+  const issues = reportIssues(pdfPlan(), [row], catalog);
+  assert.ok(issues.some((issue) => /quarteirão/i.test(issue)));
+});
+
+test("plano legado sem classificação não gera PDF, mas os quatro campos resolvem", async () => {
+  const legacy = pdfPlan({
+    idCidade: null,
+    idCategoria: null,
+    atividade: null,
+    tipo: null,
+  });
+  assert.ok(reportIssues(legacy, [concludedRow()], catalog).length >= 4);
+  await assert.rejects(() => createDailyReport(legacy, [concludedRow()], catalog));
+  const complete = pdfPlan();
+  await assert.doesNotReject(() => createDailyReport(complete, [concludedRow()], catalog));
 });

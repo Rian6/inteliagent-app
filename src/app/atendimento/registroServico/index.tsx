@@ -273,6 +273,7 @@ export default function General() {
           "boletim.quarteirao",
           "boletim.ladoQuarteirao",
           "boletim.horaEntrada",
+          "boletim.agenteNome",
         ]}
       >
         {[
@@ -311,7 +312,7 @@ export default function General() {
       </Disclosure>
       <Disclosure
         title="Detalhes do imóvel"
-        validationKeys={["complemento", "numeroQuartos"]}
+        validationKeys={["complemento", "numeroQuartos", "tipoImovel"]}
         summary={
           [visita.tipoImovel, visita.complemento].filter(Boolean).join(" · ") ||
           "Tipo, complemento, lado da rua e quartos"
@@ -319,6 +320,12 @@ export default function General() {
       >
         <SelectField
           label="Tipo do imóvel"
+          required
+          error={
+            submitted && !String(visita.tipoImovel || "").trim()
+              ? "Selecione o tipo do imóvel."
+              : undefined
+          }
           value={visita.tipoImovel || ""}
           onChange={(tipoImovel) => updateVisita({ tipoImovel })}
           options={[

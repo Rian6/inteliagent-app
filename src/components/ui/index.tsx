@@ -457,21 +457,25 @@ export function SelectField({
   value,
   onChange,
   options,
+  required = false,
+  error,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
+  required?: boolean;
+  error?: string;
 }) {
   return (
     <View style={{ gap: 6 }}>
       <Text small bold>
-        {label}
+        {required ? label + " *" : label}
       </Text>
       <View
         style={{
           borderWidth: 1,
-          borderColor: c.outlineVariant,
+          borderColor: error ? c.error : c.outlineVariant,
           borderRadius: 10,
           backgroundColor: c.surface,
         }}
@@ -482,12 +486,16 @@ export function SelectField({
           onValueChange={onChange}
           style={{ minHeight: 50, color: c.onSurface }}
         >
-          <Picker.Item label="Não informado" value="" />
+          <Picker.Item
+            label={required ? "Selecione…" : "Não informado"}
+            value=""
+          />
           {options.map((option) => (
             <Picker.Item key={option.value} {...option} />
           ))}
         </Picker>
       </View>
+      {error ? <ErrorText>{error}</ErrorText> : null}
     </View>
   );
 }

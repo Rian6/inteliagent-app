@@ -992,7 +992,7 @@ test('draft restores its optional screen and data after reopening SQLite without
   const {db,engine,remote}=await fixture({db:open(filename)});
   await engine.transaction(tx=>tx.save('PLANEJAMENTO',plan('resume-flow')));
   const repository=new Visits(engine);
-  const draft=newVisit({id:'resume-screen',idPlanejamento:'resume-flow',nome:'Rua de campo',numero:'12',__page:'amostra',__completed:['index','inspecao'],__inspectionAnswered:true,contemAmostra:true,amostra:{numeroInicio:10,numeroFinal:12,quantidade:3}});
+  const draft=newVisit({id:'resume-screen',idPlanejamento:'resume-flow',nome:'Rua de campo',numero:'12',tipoImovel:'Residencial',boletim:{quarteirao:'12',ladoQuarteirao:'2',agenteNome:'Agente Teste'},__page:'amostra',__completed:['index','inspecao'],__inspectionAnswered:true,contemAmostra:true,amostra:{numeroInicio:10,numeroFinal:12,quantidade:3}});
   await repository.drafts.save(draft);
   db.native.close();
   const reopened=await fixture({db:open(filename),remote});

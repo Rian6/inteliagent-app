@@ -81,6 +81,16 @@ export function visitPageErrors(
     ])
       if (String(b[key] || "").length > 32)
         errors["boletim." + key] = "Use até 32 caracteres.";
+    // Campos obrigatórios no registro diário PNCD/FAD: o PDF do boletim não pode
+    // ser gerado sem eles, então o cadastro já bloqueia a continuidade.
+    if (!String(b.quarteirao || "").trim())
+      errors["boletim.quarteirao"] = "Informe o número do quarteirão.";
+    if (!String(b.ladoQuarteirao || "").trim())
+      errors["boletim.ladoQuarteirao"] = "Informe a face do quarteirão.";
+    if (!String(b.agenteNome || "").trim())
+      errors["boletim.agenteNome"] = "Informe o agente responsável.";
+    if (!String(v.tipoImovel || "").trim())
+      errors.tipoImovel = "Selecione o tipo do imóvel.";
     if (!String(v.nome || "").trim())
       errors.nome = "Informe o endereço do imóvel.";
     else if (String(v.nome).length > 255)
@@ -173,6 +183,14 @@ export function visitPageErrors(
           for (const key of ["quantidadeCarga", "quantidadeTratamento"])
             check(`tratamento.${mode}.${key}`, t[mode][key], true);
         }
+      // O boletim PNCD exige os gramas do larvicida L1 quando o focal está
+      // ativo ou quando há um tratamento legado com produto informado.
+      if (
+        (t.focal?.ativo || String(t.tipo || "").trim()) &&
+        !String(v.boletim?.focalGramas ?? "").trim()
+      )
+        errors["boletim.focalGramas"] =
+          "Informe as gramas de larvicida L1 aplicadas.";
     }
   }
   if (page === "revisao") {

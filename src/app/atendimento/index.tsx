@@ -53,10 +53,9 @@ export default function PlanningDetails() {
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [submitted, setSubmitted] = useState(false);
-  const fields =
-    !id && submitted
-      ? planningReportErrors({ ...form, ...classification }, catalog)
-      : {};
+  const fields = submitted
+    ? planningReportErrors({ ...form, ...classification }, catalog)
+    : {};
   const update = (patch: Record<string, any>) =>
     setForm((previous) => ({ ...previous, ...patch }));
   useEffect(() => {
@@ -97,15 +96,15 @@ export default function PlanningDetails() {
     }
     setSubmitted(true);
     setError("");
-    if (!id) {
-      const errors = planningReportErrors(
-        { ...form, ...classification },
-        catalog,
-      );
-      if (Object.keys(errors).length) {
-        setError(Object.values(errors).join(" "));
-        return;
-      }
+    // A validação do cadastro é a mesma exigida para gerar o PDF do boletim:
+    // todo campo obrigatório no relatório é obrigatório no cadastro.
+    const reportErrors = planningReportErrors(
+      { ...form, ...classification },
+      catalog,
+    );
+    if (Object.keys(reportErrors).length) {
+      setError(Object.values(reportErrors).join(" "));
+      return;
     }
     if (
       !String(form.nome).trim() ||
@@ -165,7 +164,7 @@ export default function PlanningDetails() {
               value={form.boletim || {}}
               onChange={(boletim) => update({ boletim })}
               disabled={!admin || busy}
-              required={!id}
+              required
               error={fields.codigoLocalidade}
             />
             <TextInput
@@ -201,7 +200,7 @@ export default function PlanningDetails() {
             <TextInput
               mode="outlined"
               accessibilityLabel="Ciclo"
-              label={!id ? "Ciclo *" : "Ciclo"}
+              label="Ciclo *"
               error={!!fields.ciclo}
               value={String(form.ciclo ?? "")}
               keyboardType="number-pad"
@@ -256,7 +255,7 @@ export default function PlanningDetails() {
                   : "Preencha os quatro campos para atualizar a classificação PNCD/FAD."}
             </Text>
             <CatalogSelect
-              required={!id}
+              required
               error={fields.idCidade}
               label="Município"
               items={catalog.municipios}
@@ -267,7 +266,7 @@ export default function PlanningDetails() {
               }
             />
             <CatalogSelect
-              required={!id}
+              required
               error={fields.idCategoria}
               label="Categoria da localidade"
               items={catalog.categorias}
@@ -278,7 +277,7 @@ export default function PlanningDetails() {
               }
             />
             <CatalogSelect
-              required={!id}
+              required
               error={fields.atividade}
               label="Atividade"
               items={catalog.atividades}
@@ -289,7 +288,7 @@ export default function PlanningDetails() {
               }
             />
             <CatalogSelect
-              required={!id}
+              required
               error={fields.tipo}
               label="Tipo da localidade"
               items={catalog.tipos}
