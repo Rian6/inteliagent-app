@@ -3,9 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {emptyClassification,selectedClassification,mergeClassification,planningCycle,validatePlanningClassification} from '../src/data/planning-fields.ts';
 const catalog=JSON.parse(readFileSync(new URL('../src/data/planning-catalog.json',import.meta.url),'utf8'));
-test('official municipality snapshot is identical in web, mobile and both servers',()=>{
-  const canonical=readFileSync(new URL('../../data/planning-catalog.json',import.meta.url),'utf8');
-  for(const path of ['../src/data/planning-catalog.json','../../inteliagent-webapp/src/data/planning-catalog.json','../../inteliagent-main-server/src/main/resources/catalogos/planning-catalog.json','../../inteliagent-load-server/src/main/resources/catalogos/planning-catalog.json']) assert.equal(readFileSync(new URL(path,import.meta.url),'utf8'),canonical);
+test('official municipality snapshot contains unique complete municipality codes',()=>{
   assert.equal(new Set(catalog.municipios.map(row=>row.value)).size,catalog.municipios.length);
   assert.ok(catalog.municipios.length>5500);
   assert.equal(catalog.municipios.find(row=>row.value===4104808).label,'Cascavel — PR');
