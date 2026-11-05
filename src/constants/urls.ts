@@ -4,3 +4,5 @@ export const MAINSERVICE = process.env.EXPO_PUBLIC_MAIN_URL || SERVER_URL;
 export const LOADSERVICE = process.env.EXPO_PUBLIC_LOAD_URL || SERVER_URL;
 export const SOCKETSERVICEURL = process.env.EXPO_PUBLIC_CHAT_URL || SERVER_URL;
 export const APP_RELEASE_URL = process.env.EXPO_PUBLIC_APP_RELEASE_URL || `${SERVER_URL}/mobile/releases/latest.json`;
+export const LOADSOCKETSERVICEURL = AUTHSERVICE.replace(/^http/, 'ws');
+export const CEPSERVICE = 'https://viacep.com.br/ws/{CEP}/json/';
