@@ -42,3 +42,12 @@ yarn-error.*
 node_modules/
 dist/
 *.log
+
+# Private runtime and generated reports
+.env
+.env.*
+!.env.example
+*.log
+audit.json
+*.keystore
+*.jks

@@ -29,3 +29,8 @@ Rascunhos são gravados no SQLite durante o preenchimento. Finalizar uma visita 
 O build Android usa caminhos CMake curtos em `../.cxx` para suportar o Ninja no Windows. Execute `scripts/build-android.ps1` para gerar um APK de desenvolvimento arm64. O plugin `plugins/withWindowsCmake.cjs` preserva essa configuração nos próximos prebuilds.
 
 Os testes usam arquivos SQLite reais e simulam perda de confirmação, reinício, concorrência, bloqueio de registros, migração legada e isolamento de contas. A integração com o Java/MySQL real está em `../tests/test_offline_protocol.py`. Veja o protocolo completo em `../docs/SINCRONIZACAO.md`.
+
+
+## CI/CD e produção
+
+O workflow `.github/workflows/ci.yml` valida pushes e pull requests. Consulte a [infraestrutura e operação](https://github.com/Rian6/inteliagent-infra). Configure variáveis a partir de `.env.example`; segredos ficam em arquivos privados no servidor e GitHub Secrets. Não publique tokens, senhas ou arquivos de assinatura.
